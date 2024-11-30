@@ -1,0 +1,10 @@
+^D:\FH UNI\RTG\EXERCISE1-DRAW2DSCENE-VBOVAO\BUILD\CMAKEFILES\A156E49144C5A025775ECB82BA8978AE\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SD:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO" "-BD:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "D:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/build/RTG1.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
