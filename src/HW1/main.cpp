@@ -74,6 +74,13 @@ int main() {
     triangles.emplace_back(vertices2, color2);
     triangles.emplace_back(vertices3, color3);
 
+    // Create a circle
+    GLfloat center[] = { 0.0f, 0.0f, 0.0f };
+    GLfloat radius = 0.3f;
+    GLfloat circleColor[] = { 0.0f, 1.0f, 1.0f };  // cyan
+    std::vector<Triangle> circle = Triangle::createCircle(center, radius, circleColor, 20);
+    triangles.insert(triangles.end(), circle.begin(), circle.end());
+
     // Main Loop
     while (!glfwWindowShouldClose(window)) {
         processInput(window);

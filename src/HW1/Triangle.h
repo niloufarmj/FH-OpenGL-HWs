@@ -2,13 +2,14 @@
 #define TRIANGLE_H
 
 #include <glad/glad.h>
-#include <iostream>
 #include <vector>
 
 class Triangle {
 public:
     Triangle(GLfloat* vertices, GLfloat* color);
     void draw() const;
+
+    static std::vector<Triangle> createCircle(GLfloat* center, GLfloat radius, GLfloat* color, int numTriangles);
 
 private:
     GLfloat* vertices;
