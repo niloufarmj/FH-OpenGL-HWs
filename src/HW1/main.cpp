@@ -78,8 +78,17 @@ int main() {
     GLfloat center[] = { 0.0f, 0.0f, 0.0f };
     GLfloat radius = 0.3f;
     GLfloat circleColor[] = { 0.0f, 1.0f, 1.0f };  // cyan
-    std::vector<Triangle> circle = Triangle::createCircle(center, radius, circleColor, 20);
+    int numTriangles = 10; // You can change this value to create a circle with a different number of triangles
+    std::vector<Triangle> circle = Triangle::createCircle(center, radius, circleColor, numTriangles);
     triangles.insert(triangles.end(), circle.begin(), circle.end());
+
+    // Create a rectangle
+    GLfloat rectCenter[] = { 0.5f, 0.5f, 0.0f };
+    GLfloat rectWidth = 0.4f;
+    GLfloat rectHeight = 0.2f;
+    GLfloat rectColor[] = { 0.0f, 1.0f, 0.0f };  // green
+    std::vector<Triangle> rectangle = Triangle::createRectangle(rectCenter, rectWidth, rectHeight, rectColor);
+    triangles.insert(triangles.end(), rectangle.begin(), rectangle.end());
 
     // Main Loop
     while (!glfwWindowShouldClose(window)) {

@@ -10,6 +10,7 @@ public:
     void draw() const;
 
     static std::vector<Triangle> createCircle(GLfloat* center, GLfloat radius, GLfloat* color, int numTriangles);
+    static std::vector<Triangle> createRectangle(GLfloat* center, GLfloat width, GLfloat height, GLfloat* color);
 
 private:
     GLfloat* vertices;

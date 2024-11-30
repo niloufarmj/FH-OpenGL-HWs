@@ -61,3 +61,34 @@ std::vector<Triangle> Triangle::createCircle(GLfloat* center, GLfloat radius, GL
 
     return triangles;
 }
+
+std::vector<Triangle> Triangle::createRectangle(GLfloat* center, GLfloat width, GLfloat height, GLfloat* color) {
+    std::vector<Triangle> triangles;
+
+    GLfloat halfWidth = width / 2.0f;
+    GLfloat halfHeight = height / 2.0f;
+
+    // Define the four corners of the rectangle
+    GLfloat topLeft[] = { center[0] - halfWidth, center[1] + halfHeight, center[2] };
+    GLfloat topRight[] = { center[0] + halfWidth, center[1] + halfHeight, center[2] };
+    GLfloat bottomLeft[] = { center[0] - halfWidth, center[1] - halfHeight, center[2] };
+    GLfloat bottomRight[] = { center[0] + halfWidth, center[1] - halfHeight, center[2] };
+
+    // First triangle (top-left, bottom-left, top-right)
+    GLfloat vertices1[] = {
+        topLeft[0], topLeft[1], topLeft[2],
+        bottomLeft[0], bottomLeft[1], bottomLeft[2],
+        topRight[0], topRight[1], topRight[2]
+    };
+    triangles.emplace_back(vertices1, color);
+
+    // Second triangle (bottom-left, bottom-right, top-right)
+    GLfloat vertices2[] = {
+        bottomLeft[0], bottomLeft[1], bottomLeft[2],
+        bottomRight[0], bottomRight[1], bottomRight[2],
+        topRight[0], topRight[1], topRight[2]
+    };
+    triangles.emplace_back(vertices2, color);
+
+    return triangles;
+}
