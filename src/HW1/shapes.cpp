@@ -57,8 +57,68 @@ Building buildings[] = {
     }
 };
 
+// Define bushes
+Bush bushes[] = {
+    { 
+        { 
+            { {0.34f, -0.635f, 0.0f,
+               0.33f, -0.56f, 0.0f,
+               0.39f, -0.635f, 0.0f}, 
+              {0.49f, 0.82f, 0.54f} 
+            }, // Triangle 1
+            { {0.355f, -0.635f, 0.0f,
+               0.36f, -0.5f, 0.0f,
+               0.42f, -0.635f, 0.0f}, 
+              {0.49f, 0.82f, 0.54f} 
+            }, // Triangle 2
+            { {0.43f, -0.635f, 0.0f,
+               0.435f, -0.51f, 0.0f,
+               0.36f, -0.635f, 0.0f}, 
+              {0.49f, 0.82f, 0.54f} 
+            }, // Triangle 3
+            { {0.4f, -0.635f, 0.0f,
+               0.45f, -0.57f, 0.0f,
+               0.44f, -0.635f, 0.0f}, 
+              {0.49f, 0.82f, 0.54f} 
+            }, // Triangle 4
+        }
+    },
+    {
+        { 
+            { {-0.24f, -0.635f, 0.0f,
+               -0.23f, -0.56f, 0.0f,
+               -0.29f, -0.635f, 0.0f}, 
+              {0.49f, 0.82f, 0.54f} 
+            }, // Triangle 1
+            { {-0.255f, -0.635f, 0.0f,
+               -0.26f, -0.5f, 0.0f,
+               -0.32f, -0.635f, 0.0f}, 
+              {0.49f, 0.82f, 0.54f} 
+            }, // Triangle 2
+            { {-0.33f, -0.635f, 0.0f,
+               -0.335f, -0.51f, 0.0f,
+               -0.26f, -0.635f, 0.0f}, 
+              {0.49f, 0.82f, 0.54f} 
+            }, // Triangle 3
+            { {-0.3f, -0.635f, 0.0f,
+               -0.35f, -0.57f, 0.0f,
+               -0.34f, -0.635f, 0.0f}, 
+              {0.49f, 0.82f, 0.54f} 
+            }, // Triangle 4
+        } 
+    }
+};
+
 std::vector<Triangle> createRectangle(Rectangle& rect) {
     return Triangle::createRectangle(rect.center, rect.width, rect.height, rect.color);
+}
+
+std::vector<Triangle> createBush(Bush& bush) {
+    std::vector<Triangle> triangles;
+    for (auto& tri : bush.triangles) {
+        triangles.emplace_back(tri.vertices, tri.color);
+    }
+    return triangles;
 }
 
 std::vector<Triangle> createBuilding(Building& building) {
@@ -85,6 +145,12 @@ std::vector<Triangle> createScene() {
     for (auto& building : buildings) {
         std::vector<Triangle> buildingTriangles = createBuilding(building);
         triangles.insert(triangles.end(), buildingTriangles.begin(), buildingTriangles.end());
+    }
+
+    // Create bushes and add to triangles
+    for (auto& bush : bushes) {
+        std::vector<Triangle> bushTriangles = createBush(bush);
+        triangles.insert(triangles.end(), bushTriangles.begin(), bushTriangles.end());
     }
 
     return triangles;
