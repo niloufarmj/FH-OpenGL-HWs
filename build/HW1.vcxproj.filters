@@ -10,12 +10,18 @@
     <ClCompile Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW1\shaders.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW1\shapes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW1\Triangle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW1\shaders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW1\shapes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,15 +4,16 @@
 #include <vector>
 #include "Triangle.h"
 #include "shaders.h"
+#include "Shapes.h"
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
-const unsigned int WIDTH = 800;
-const unsigned int HEIGHT = 600;
+const unsigned int WIDTH = 850;
+const unsigned int HEIGHT = 850;
 
 void renderScene(const std::vector<Triangle>& triangles) {
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black
+    glClearColor(0.956f, 0.8f, 0.792f, 1.0f); // Set background color
     glClear(GL_COLOR_BUFFER_BIT);
 
     for (const auto& triangle : triangles) {
@@ -27,7 +28,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
     // GLFW Window
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Triangle Example", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Sakura", NULL, NULL);
     if (window == NULL) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -47,48 +48,8 @@ int main() {
                                              "D:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/src/HW1/colorShader.frag");
     glUseProgram(shaderProgram);
 
-    // Define vertices and colors for three triangles
-    GLfloat vertices1[] = {
-        -0.9f, -0.9f, 0.0f,  // bottom left
-        -0.5f, -0.9f, 0.0f,  // bottom right
-        -0.7f, -0.5f, 0.0f   // top
-    };
-    GLfloat color1[] = { 1.0f, 0.0f, 0.0f };  // red
-
-    GLfloat vertices2[] = {
-        0.5f, -0.9f, 0.0f,   // bottom left
-        0.9f, -0.9f, 0.0f,   // bottom right
-        0.7f, -0.5f, 0.0f    // top
-    };
-    GLfloat color2[] = { 1.0f, 1.0f, 0.0f };  // yellow
-
-    GLfloat vertices3[] = {
-        -0.2f, 0.5f, 0.0f,   // bottom left
-        0.2f, 0.5f, 0.0f,    // bottom right
-        0.0f, 0.9f, 0.0f     // top
-    };
-    GLfloat color3[] = { 0.5f, 0.5f, 0.5f };  // gray
-
-    std::vector<Triangle> triangles;
-    triangles.emplace_back(vertices1, color1);
-    triangles.emplace_back(vertices2, color2);
-    triangles.emplace_back(vertices3, color3);
-
-    // Create a circle
-    GLfloat center[] = { 0.0f, 0.0f, 0.0f };
-    GLfloat radius = 0.3f;
-    GLfloat circleColor[] = { 0.0f, 1.0f, 1.0f };  // cyan
-    int numTriangles = 10; // You can change this value to create a circle with a different number of triangles
-    std::vector<Triangle> circle = Triangle::createCircle(center, radius, circleColor, numTriangles);
-    triangles.insert(triangles.end(), circle.begin(), circle.end());
-
-    // Create a rectangle
-    GLfloat rectCenter[] = { 0.5f, 0.5f, 0.0f };
-    GLfloat rectWidth = 0.4f;
-    GLfloat rectHeight = 0.2f;
-    GLfloat rectColor[] = { 0.0f, 1.0f, 0.0f };  // green
-    std::vector<Triangle> rectangle = Triangle::createRectangle(rectCenter, rectWidth, rectHeight, rectColor);
-    triangles.insert(triangles.end(), rectangle.begin(), rectangle.end());
+    // Create the scene
+    std::vector<Triangle> triangles = createScene();
 
     // Main Loop
     while (!glfwWindowShouldClose(window)) {
