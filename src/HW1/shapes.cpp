@@ -109,8 +109,29 @@ Bush bushes[] = {
     }
 };
 
+// Define tree data 
+Tree tree = {
+    {
+        {
+            {},
+            {
+                { {-0.12f, -0.635f, 0.0f,
+                   0.0f, 0.85f, 0.0f,
+                   0.12f, -0.635f, 0.0f}, 
+                  {0.22f, 0.17f, 0.23f} 
+                },
+            }
+        }
+    },
+    {}
+};
+
 std::vector<Triangle> createRectangle(Rectangle& rect) {
     return Triangle::createRectangle(rect.center, rect.width, rect.height, rect.color);
+}
+
+std::vector<Triangle> createCircle(Circle& circle) {
+    return Triangle::createCircle(circle.center, circle.radius, circle.color, circle.numTriangles);
 }
 
 std::vector<Triangle> createBush(Bush& bush) {
@@ -129,6 +150,32 @@ std::vector<Triangle> createBuilding(Building& building) {
     }
     return triangles;
 }
+
+std::vector<Triangle> createTree(Tree& tree) {
+    std::vector<Triangle> triangles;
+
+    for (auto& branch : tree.branches) {
+        for (auto& rect : branch.rects) {
+            std::vector<Triangle> branchRectTriangles = createRectangle(rect);
+            triangles.insert(triangles.end(), branchRectTriangles.begin(), branchRectTriangles.end());
+        }
+        for (auto& tri : branch.tris) {
+            triangles.emplace_back(tri.vertices, tri.color);
+        }
+    }
+
+    for (auto& bloom : tree.blooms) {
+        for (auto& petal : bloom.petals) {
+            std::vector<Triangle> petalTriangles = createCircle(petal);
+            triangles.insert(triangles.end(), petalTriangles.begin(), petalTriangles.end());
+        }
+        std::vector<Triangle> centerTriangles = createCircle(bloom.centerCircle);
+        triangles.insert(triangles.end(), centerTriangles.begin(), centerTriangles.end());
+    }
+
+    return triangles;
+}
+
 
 std::vector<Triangle> createScene() {
     std::vector<Triangle> triangles;
@@ -152,6 +199,16 @@ std::vector<Triangle> createScene() {
         std::vector<Triangle> bushTriangles = createBush(bush);
         triangles.insert(triangles.end(), bushTriangles.begin(), bushTriangles.end());
     }
+
+    GLfloat center_buttomLine[] = { 0.0f, -0.66f, 0.0f };
+    GLfloat width_buttomLine = 2.0f;
+    GLfloat height_buttomLine = 0.065f;
+    GLfloat color_buttomLine[] = { 0.22f, 0.17f, 0.23f }; 
+    std::vector<Triangle> buttomLine = Triangle::createRectangle(center_buttomLine, width_buttomLine, height_buttomLine, color_buttomLine);
+    triangles.insert(triangles.end(), buttomLine.begin(), buttomLine.end());
+
+    std::vector<Triangle> treeTriangles = createTree(tree);
+    triangles.insert(triangles.end(), treeTriangles.begin(), treeTriangles.end());
 
     return triangles;
 }

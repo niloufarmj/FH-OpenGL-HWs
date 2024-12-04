@@ -25,9 +25,33 @@ struct Bush {
     std::vector<TriangleVertices> triangles;
 };
 
+struct Circle {
+    GLfloat center[3];
+    GLfloat radius;
+    GLfloat color[3];
+    int numTriangles; 
+};
+
+struct Bloom {
+    std::vector<Circle> petals;
+    Circle centerCircle;
+};
+
+struct Branch {
+    std::vector<Rectangle> rects;
+    std::vector<TriangleVertices> tris;
+};
+
+struct Tree {
+    std::vector<Branch> branches;
+    std::vector<Bloom> blooms;
+};
+
 std::vector<Triangle> createRectangle(Rectangle& rect);
+std::vector<Triangle> createCircle(Circle& circle);
 std::vector<Triangle> createBuilding(Building& building);
 std::vector<Triangle> createBush(Bush& bush);
+std::vector<Triangle> createTree(Tree& tree);
 std::vector<Triangle> createScene();
 
 extern Building buildings[];
