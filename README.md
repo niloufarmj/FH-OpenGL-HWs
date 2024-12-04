@@ -1,8 +1,6 @@
 # Real Time Graphics
 Repository for the code used in the course Real Time Graphics at the FH Hagenberg.
 
-Contact: [David C. Schedl](mailto:david.schedl@fh-hagenberg.at).
-
 ## Install
 To compile the examples use the following steps:
 ### VCPKG:
