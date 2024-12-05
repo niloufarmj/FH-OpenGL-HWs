@@ -109,6 +109,7 @@ Bush bushes[] = {
     }
 };
 
+
 // Define tree data 
 Tree tree = {
     {
@@ -123,11 +124,17 @@ Tree tree = {
             }
         }
     },
-    {}
+    {
+        {
+            {{ 0.0f, 0.0f, 0.0f }, 0.03f, { 0.0f, 1.0f, 1.0f }, 20},
+            {0.0f, 0.5f, 1.0f},
+            0
+        }
+    }
 };
 
-std::vector<Triangle> createRectangle(Rectangle& rect) {
-    return Triangle::createRectangle(rect.center, rect.width, rect.height, rect.color);
+std::vector<Triangle> createRectangle(Rectangle& rect, GLfloat rotation) {
+    return Triangle::createRectangle(rect.center, rect.width, rect.height, rect.color, rotation);
 }
 
 std::vector<Triangle> createCircle(Circle& circle) {
@@ -143,9 +150,9 @@ std::vector<Triangle> createBush(Bush& bush) {
 }
 
 std::vector<Triangle> createBuilding(Building& building) {
-    std::vector<Triangle> triangles = createRectangle(building.buildingRect);
+    std::vector<Triangle> triangles = createRectangle(building.buildingRect, 0);
     for (auto& window : building.windowsRects) {
-        std::vector<Triangle> windowTriangles = createRectangle(window);
+        std::vector<Triangle> windowTriangles = createRectangle(window, 0);
         triangles.insert(triangles.end(), windowTriangles.begin(), windowTriangles.end());
     }
     return triangles;
@@ -155,8 +162,8 @@ std::vector<Triangle> createTree(Tree& tree) {
     std::vector<Triangle> triangles;
 
     for (auto& branch : tree.branches) {
-        for (auto& rect : branch.rects) {
-            std::vector<Triangle> branchRectTriangles = createRectangle(rect);
+        for (auto& branchRect : branch.branchRects) {
+            std::vector<Triangle> branchRectTriangles = createRectangle(branchRect.rect, branchRect.rotation);
             triangles.insert(triangles.end(), branchRectTriangles.begin(), branchRectTriangles.end());
         }
         for (auto& tri : branch.tris) {
@@ -165,28 +172,60 @@ std::vector<Triangle> createTree(Tree& tree) {
     }
 
     for (auto& bloom : tree.blooms) {
-        for (auto& petal : bloom.petals) {
-            std::vector<Triangle> petalTriangles = createCircle(petal);
-            triangles.insert(triangles.end(), petalTriangles.begin(), petalTriangles.end());
-        }
-        std::vector<Triangle> centerTriangles = createCircle(bloom.centerCircle);
-        triangles.insert(triangles.end(), centerTriangles.begin(), centerTriangles.end());
+        std::vector<Triangle> bloomTriangles = createBloom(bloom.cirecleData.center, bloom.cirecleData.radius, bloom.cirecleData.color, bloom.centerColor, bloom.cirecleData.numTriangles, bloom.rotation);
+        triangles.insert(triangles.end(), bloomTriangles.begin(), bloomTriangles.end());
     }
 
     return triangles;
 }
 
 
-std::vector<Triangle> createScene() {
+std::vector<Triangle> createBloom(
+    GLfloat* center, 
+    GLfloat radius, 
+    GLfloat* color, 
+    GLfloat* centerColor, 
+    int numTriangles, 
+    GLfloat rotation
+) {
     std::vector<Triangle> triangles;
 
-    // Create a circle
-    GLfloat center[] = { 0.0f, 0.0f, 0.0f };
-    GLfloat radius = 0.3f;
-    GLfloat circleColor[] = { 0.0f, 1.0f, 1.0f };  // cyan
-    int numTriangles = 30; // You can change this value to create a circle with a different number of triangles
-    std::vector<Triangle> circle = Triangle::createCircle(center, radius, circleColor, numTriangles);
-    triangles.insert(triangles.end(), circle.begin(), circle.end());
+    // Center petal
+    auto centerPetal = Triangle::createCircle(center, radius, color, numTriangles);
+    triangles.insert(triangles.end(), centerPetal.begin(), centerPetal.end());
+
+    // Positions of petals relative to the center
+    GLfloat petalOffsets[4][2] = {
+        { -radius, 0.0f },  // Left
+        { radius, 0.0f },   // Right
+        { 0.0f, radius },   // Top
+        { 0.0f, -radius }   // Bottom
+    };
+
+    for (const auto& offset : petalOffsets) {
+        GLfloat petalCenter[3] = {
+            center[0] + offset[0],
+            center[1] + offset[1],
+            center[2]
+        };
+
+        // Apply rotation
+        Triangle::rotatePoint(petalCenter[0], petalCenter[1], center[0], center[1], rotation);
+
+        // Create petal
+        auto petal = Triangle::createCircle(petalCenter, radius, color, numTriangles);
+        triangles.insert(triangles.end(), petal.begin(), petal.end());
+    }
+
+    // Small center circle
+    auto centerCircle = Triangle::createCircle(center, radius / 3, centerColor, numTriangles);
+    triangles.insert(triangles.end(), centerCircle.begin(), centerCircle.end());
+
+    return triangles;
+}
+
+std::vector<Triangle> createScene() {
+    std::vector<Triangle> triangles;
 
     // Create buildings and add to triangles
     for (auto& building : buildings) {
@@ -204,11 +243,11 @@ std::vector<Triangle> createScene() {
     GLfloat width_buttomLine = 2.0f;
     GLfloat height_buttomLine = 0.065f;
     GLfloat color_buttomLine[] = { 0.22f, 0.17f, 0.23f }; 
-    std::vector<Triangle> buttomLine = Triangle::createRectangle(center_buttomLine, width_buttomLine, height_buttomLine, color_buttomLine);
+    std::vector<Triangle> buttomLine = Triangle::createRectangle(center_buttomLine, width_buttomLine, height_buttomLine, color_buttomLine, 0);
     triangles.insert(triangles.end(), buttomLine.begin(), buttomLine.end());
 
     std::vector<Triangle> treeTriangles = createTree(tree);
     triangles.insert(triangles.end(), treeTriangles.begin(), treeTriangles.end());
-
+    
     return triangles;
 }

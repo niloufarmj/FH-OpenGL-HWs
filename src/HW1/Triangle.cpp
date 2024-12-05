@@ -11,6 +11,23 @@ Triangle::Triangle(GLfloat* vertices, GLfloat* color) {
     initBuffers();
 }
 
+void Triangle::rotatePoint(GLfloat& x, GLfloat& y, GLfloat cx, GLfloat cy, GLfloat angle) {
+    GLfloat s = sin(angle);
+    GLfloat c = cos(angle);
+
+    // Translate point to origin
+    x -= cx;
+    y -= cy;
+
+    // Rotate point
+    GLfloat newX = x * c - y * s;
+    GLfloat newY = x * s + y * c;
+
+    // Translate point back
+    x = newX + cx;
+    y = newY + cy;
+}
+
 void Triangle::draw() const {
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -62,7 +79,7 @@ std::vector<Triangle> Triangle::createCircle(GLfloat* center, GLfloat radius, GL
     return triangles;
 }
 
-std::vector<Triangle> Triangle::createRectangle(GLfloat* center, GLfloat width, GLfloat height, GLfloat* color) {
+std::vector<Triangle> Triangle::createRectangle(GLfloat* center, GLfloat width, GLfloat height, GLfloat* color, GLfloat rotation) {
     std::vector<Triangle> triangles;
 
     GLfloat halfWidth = width / 2.0f;
@@ -73,6 +90,12 @@ std::vector<Triangle> Triangle::createRectangle(GLfloat* center, GLfloat width, 
     GLfloat topRight[] = { center[0] + halfWidth, center[1] + halfHeight, center[2] };
     GLfloat bottomLeft[] = { center[0] - halfWidth, center[1] - halfHeight, center[2] };
     GLfloat bottomRight[] = { center[0] + halfWidth, center[1] - halfHeight, center[2] };
+
+    // Rotate each corner around the center
+    Triangle::rotatePoint(topLeft[0], topLeft[1], center[0], center[1], rotation);
+    Triangle::rotatePoint(topRight[0], topRight[1], center[0], center[1], rotation);
+    Triangle::rotatePoint(bottomLeft[0], bottomLeft[1], center[0], center[1], rotation);
+    Triangle::rotatePoint(bottomRight[0], bottomRight[1], center[0], center[1], rotation);
 
     // First triangle (top-left, bottom-left, top-right)
     GLfloat vertices1[] = {

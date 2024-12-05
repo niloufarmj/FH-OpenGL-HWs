@@ -33,12 +33,18 @@ struct Circle {
 };
 
 struct Bloom {
-    std::vector<Circle> petals;
-    Circle centerCircle;
+    Circle cirecleData;
+    GLfloat centerColor[3];
+    GLfloat rotation;
+};
+
+struct BranchRect{
+    Rectangle rect;
+    GLfloat rotation;
 };
 
 struct Branch {
-    std::vector<Rectangle> rects;
+    std::vector<BranchRect> branchRects;
     std::vector<TriangleVertices> tris;
 };
 
@@ -47,10 +53,11 @@ struct Tree {
     std::vector<Bloom> blooms;
 };
 
-std::vector<Triangle> createRectangle(Rectangle& rect);
+std::vector<Triangle> createRectangle(Rectangle& rect, GLfloat rotation);
 std::vector<Triangle> createCircle(Circle& circle);
 std::vector<Triangle> createBuilding(Building& building);
 std::vector<Triangle> createBush(Bush& bush);
+std::vector<Triangle> createBloom(GLfloat* center, GLfloat radius, GLfloat* color, GLfloat* centerColor, int numTriangles, GLfloat rotation);
 std::vector<Triangle> createTree(Tree& tree);
 std::vector<Triangle> createScene();
 
