@@ -9,7 +9,10 @@ def click_event(event, x, y, flags, param):
         x_normalized = (x / (width / 2)) - 1
         y_normalized = 1 - (y / (height / 2))
         
-        print(f"Clicked at: ({x_normalized}, {y_normalized})")
+        # Format the output as "{ n.nnnf, n.nnng, 0.0f }"
+        output = f"{{ {x_normalized:.3f}f, {y_normalized:.3f}f, 0.0f }}"
+        
+        print(f"{output},")
 
 # Load the image
 image_path = 'D:\\FH Uni\\rtg\\Exercise1-Draw2DScene-VBOVAO\\src\\HW1\\sample.jpg'
