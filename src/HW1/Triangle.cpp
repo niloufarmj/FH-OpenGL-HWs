@@ -117,16 +117,16 @@ std::vector<Triangle> Triangle::createQuad(GLfloat* p1, GLfloat* p2, GLfloat* p3
     // First triangle (p1, p2, p3)
     GLfloat vertices1[] = {
         p1[0], p1[1], p1[2],
-        p2[0], p2[1], p2[2],
-        p3[0], p3[1], p3[2]
+        p3[0], p3[1], p3[2],
+        p4[0], p4[1], p4[2]
     };
     triangles.emplace_back(vertices1, color);
 
-    // Second triangle (p1, p3, p4)
+    // Second triangle (p2, p4, p3)
     GLfloat vertices2[] = {
         p1[0], p1[1], p1[2],
-        p3[0], p3[1], p3[2],
-        p4[0], p4[1], p4[2]
+        p4[0], p4[1], p4[2],
+        p2[0], p2[1], p2[2]
     };
     triangles.emplace_back(vertices2, color);
 
