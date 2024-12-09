@@ -79,7 +79,7 @@ std::vector<Triangle> Triangle::createCircle(GLfloat* center, GLfloat radius, GL
     return triangles;
 }
 
-std::vector<Triangle> Triangle::createRectangle(GLfloat* center, GLfloat width, GLfloat height, GLfloat* color, GLfloat rotation) {
+std::vector<Triangle> Triangle::createRectangle(GLfloat* center, GLfloat width, GLfloat height, GLfloat* color) {
     std::vector<Triangle> triangles;
 
     GLfloat halfWidth = width / 2.0f;
@@ -91,11 +91,6 @@ std::vector<Triangle> Triangle::createRectangle(GLfloat* center, GLfloat width, 
     GLfloat bottomLeft[] = { center[0] - halfWidth, center[1] - halfHeight, center[2] };
     GLfloat bottomRight[] = { center[0] + halfWidth, center[1] - halfHeight, center[2] };
 
-    // Rotate each corner around the center
-    Triangle::rotatePoint(topLeft[0], topLeft[1], center[0], center[1], rotation);
-    Triangle::rotatePoint(topRight[0], topRight[1], center[0], center[1], rotation);
-    Triangle::rotatePoint(bottomLeft[0], bottomLeft[1], center[0], center[1], rotation);
-    Triangle::rotatePoint(bottomRight[0], bottomRight[1], center[0], center[1], rotation);
 
     // First triangle (top-left, bottom-left, top-right)
     GLfloat vertices1[] = {
@@ -110,6 +105,28 @@ std::vector<Triangle> Triangle::createRectangle(GLfloat* center, GLfloat width, 
         bottomLeft[0], bottomLeft[1], bottomLeft[2],
         bottomRight[0], bottomRight[1], bottomRight[2],
         topRight[0], topRight[1], topRight[2]
+    };
+    triangles.emplace_back(vertices2, color);
+
+    return triangles;
+}
+
+std::vector<Triangle> Triangle::createQuad(GLfloat* p1, GLfloat* p2, GLfloat* p3, GLfloat* p4, GLfloat* color) {
+    std::vector<Triangle> triangles;
+
+    // First triangle (p1, p2, p3)
+    GLfloat vertices1[] = {
+        p1[0], p1[1], p1[2],
+        p2[0], p2[1], p2[2],
+        p3[0], p3[1], p3[2]
+    };
+    triangles.emplace_back(vertices1, color);
+
+    // Second triangle (p1, p3, p4)
+    GLfloat vertices2[] = {
+        p1[0], p1[1], p1[2],
+        p3[0], p3[1], p3[2],
+        p4[0], p4[1], p4[2]
     };
     triangles.emplace_back(vertices2, color);
 

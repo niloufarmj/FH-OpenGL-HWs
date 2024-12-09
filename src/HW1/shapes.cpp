@@ -54,7 +54,7 @@ Building buildings[] = {
             { {-0.62f, -0.42f, 0.0f}, 0.05f, 0.06f, {0.95f, 0.71f, 0.72f} }, // Window 1
             { {-0.54f, -0.42f, 0.0f}, 0.05f, 0.06f, {0.95f, 0.71f, 0.72f} }, // Window 2
             { {-0.58f, -0.573f, 0.0f}, 0.08f, 0.11f, {0.78f, 0.69f, 0.7f} } // Door
-        } // No windows
+        } 
     }
 };
 
@@ -115,145 +115,10 @@ Bush bushes[] = {
 Tree tree = {
     {
         {
-            {},
             {
-                { {-0.12f, -0.635f, 0.0f,
-                   0.0f, 0.84f, 0.0f,
-                   0.12f, -0.635f, 0.0f}, 
-                   BROWN
-                },
+                {-0.12f, -0.635f, 0.0f}, {-0.01f, 0.82f, 0.0f}, {0.01f, 0.82f, 0.0f}, {0.12f, -0.635f, 0.0f}
             }
         },
-        {
-            {
-                {
-                    {{0.12f, -0.15f, 0.0f}, 0.23f, 0.06f, BROWN},
-                    0.65f
-                },
-                {
-                    {{0.22f, 0.0f, 0.0f}, 0.13f, 0.045f, BROWN},
-                    1.5f
-                },
-                {
-                    {{0.3f, -0.07f, 0.0f}, 0.23f, 0.045f, BROWN},
-                    0.2f
-                },
-                {
-                    {{0.47f, -0.06f, 0.0f}, 0.13f, 0.035f, BROWN},
-                    -0.15f
-                },
-                {
-                    {{0.605f, -0.054f, 0.0f}, 0.16f, 0.033f, BROWN},
-                    0.2f
-                },
-                {
-                    {{0.47f, 0.01f, 0.0f}, 0.14f, 0.03f, BROWN},
-                    0.9f
-                }
-            },
-            {
-                {
-                    {0.192f, -0.059f, 0.0f,
-                    0.24f, -0.055f, 0.0f,
-                    0.225f, -0.11f, 0.0f}, 
-                    BROWN
-                }
-            }
-        },
-        {
-            {
-                {
-                    {{0.11f, 0.1f, 0.0f}, 0.16f, 0.05f, BROWN},
-                    0.65f
-                },
-                {
-                    {{0.18f, 0.22f, 0.0f}, 0.18f, 0.037f, BROWN},
-                    1.5f
-                },
-                {
-                    {{0.27f, 0.15f, 0.0f}, 0.18f, 0.038f, BROWN},
-                    0.1f
-                },
-                {
-                    {{0.47f, 0.19f, 0.0f}, 0.13f, 0.035f, BROWN},
-                    -0.15f
-                },
-                {
-                    {{0.605f, 0.2f, 0.0f}, 0.16f, 0.033f, BROWN},
-                    0.2f
-                },
-                {
-                    {{0.3f, 0.19f, 0.0f}, 0.27f, 0.03f, BROWN},
-                    0.4f
-                }
-            },
-            {
-                {
-                    {0.192f, -0.059f, 0.0f,
-                    0.24f, -0.055f, 0.0f,
-                    0.225f, -0.11f, 0.0f}, 
-                    BROWN
-                }
-            }
-        },
-        {
-            {
-                {
-                    {{-0.12f, -0.15f, 0.0f}, 0.23f, 0.06f, BROWN},
-                    -0.65f
-                },
-                {
-                    {{-0.22f, 0.01f, 0.0f}, 0.16f, 0.044f, BROWN},
-                    -1.5f
-                },
-                {
-                    {{-0.3f, -0.07f, 0.0f}, 0.23f, 0.045f, BROWN},
-                    -0.2f
-                },
-                {
-                    {{-0.47f, -0.06f, 0.0f}, 0.13f, 0.035f, BROWN},
-                    0.15f
-                },
-                {
-                    {{-0.605f, -0.054f, 0.0f}, 0.16f, 0.033f, BROWN},
-                    -0.2f
-                },
-                {
-                    {{-0.42f, 0.01f, 0.0f}, 0.14f, 0.03f, BROWN},
-                    -0.9f
-                }
-            },
-            {}
-        },
-        {
-            {
-                {
-                    {{-0.12f, -0.15f, 0.0f}, 0.23f, 0.06f, BROWN},
-                    -0.65f
-                },
-                {
-                    {{-0.22f, 0.01f, 0.0f}, 0.16f, 0.044f, BROWN},
-                    -1.5f
-                },
-                {
-                    {{-0.3f, -0.07f, 0.0f}, 0.23f, 0.045f, BROWN},
-                    -0.2f
-                },
-                {
-                    {{-0.47f, -0.06f, 0.0f}, 0.13f, 0.035f, BROWN},
-                    0.15f
-                },
-                {
-                    {{-0.605f, -0.054f, 0.0f}, 0.16f, 0.033f, BROWN},
-                    -0.2f
-                },
-                {
-                    {{-0.42f, 0.01f, 0.0f}, 0.14f, 0.03f, BROWN},
-                    -0.9f
-                }
-            },
-            {}
-        }
     },
     {
         {
@@ -264,8 +129,8 @@ Tree tree = {
     }
 };
 
-std::vector<Triangle> createRectangle(Rectangle& rect, GLfloat rotation) {
-    return Triangle::createRectangle(rect.center, rect.width, rect.height, rect.color, rotation);
+std::vector<Triangle> createRectangle(Rectangle& rect) {
+    return Triangle::createRectangle(rect.center, rect.width, rect.height, rect.color);
 }
 
 std::vector<Triangle> createCircle(Circle& circle) {
@@ -281,9 +146,9 @@ std::vector<Triangle> createBush(Bush& bush) {
 }
 
 std::vector<Triangle> createBuilding(Building& building) {
-    std::vector<Triangle> triangles = createRectangle(building.buildingRect, 0);
+    std::vector<Triangle> triangles = createRectangle(building.buildingRect);
     for (auto& window : building.windowsRects) {
-        std::vector<Triangle> windowTriangles = createRectangle(window, 0);
+        std::vector<Triangle> windowTriangles = createRectangle(window);
         triangles.insert(triangles.end(), windowTriangles.begin(), windowTriangles.end());
     }
     return triangles;
@@ -293,13 +158,9 @@ std::vector<Triangle> createTree(Tree& tree) {
     std::vector<Triangle> triangles;
 
     for (auto& branch : tree.branches) {
-        for (auto& branchRect : branch.branchRects) {
-            std::vector<Triangle> branchRectTriangles = createRectangle(branchRect.rect, branchRect.rotation);
-            triangles.insert(triangles.end(), branchRectTriangles.begin(), branchRectTriangles.end());
-        }
-        for (auto& tri : branch.tris) {
-            triangles.emplace_back(tri.vertices, tri.color);
-        }
+        GLfloat color[] = BROWN;
+        std::vector<Triangle> branchRectTriangles = Triangle::createQuad(branch.corners[0], branch.corners[1], branch.corners[2], branch.corners[3], color);
+        triangles.insert(triangles.end(), branchRectTriangles.begin(), branchRectTriangles.end());
     }
 
     for (auto& bloom : tree.blooms) {
@@ -374,7 +235,7 @@ std::vector<Triangle> createScene() {
     GLfloat width_buttomLine = 2.0f;
     GLfloat height_buttomLine = 0.065f;
     GLfloat color_buttomLine[] = BROWN;
-    std::vector<Triangle> buttomLine = Triangle::createRectangle(center_buttomLine, width_buttomLine, height_buttomLine, color_buttomLine, 0);
+    std::vector<Triangle> buttomLine = Triangle::createRectangle(center_buttomLine, width_buttomLine, height_buttomLine, color_buttomLine);
     triangles.insert(triangles.end(), buttomLine.begin(), buttomLine.end());
 
     std::vector<Triangle> treeTriangles = createTree(tree);

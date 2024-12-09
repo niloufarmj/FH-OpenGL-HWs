@@ -45,14 +45,9 @@ struct Bloom {
     GLfloat rotation;
 };
 
-struct BranchRect{
-    Rectangle rect;
-    GLfloat rotation;
-};
 
 struct Branch {
-    std::vector<BranchRect> branchRects;
-    std::vector<TriangleVertices> tris;
+    GLfloat corners[4][3];
 };
 
 struct Tree {
@@ -60,7 +55,7 @@ struct Tree {
     std::vector<Bloom> blooms;
 };
 
-std::vector<Triangle> createRectangle(Rectangle& rect, GLfloat rotation);
+std::vector<Triangle> createRectangle(Rectangle& rect);
 std::vector<Triangle> createCircle(Circle& circle);
 std::vector<Triangle> createBuilding(Building& building);
 std::vector<Triangle> createBush(Bush& bush);
