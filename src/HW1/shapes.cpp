@@ -533,12 +533,102 @@ Tree tree = {
     },
     {
         {
-            {{ 0.01f, 0.77f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_YELLOW, 20},
+            {{ 0.01f, 0.77f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_BACK, 20},
             BLOOM_COLOR_DARK,
             -20
         },
         {
-            {{ 0.332f, -0.259f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 50},
+            {{ 0.105f, 0.693f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_BACK, 20},
+            BLOOM_COLOR_DARK,
+            -20
+        },
+        {
+            {{ 0.332f, -0.259f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
+            BLOOM_COLOR_DARK, 
+            -20
+        },
+        {
+            {{ 0.256f, 0.642f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
+            BLOOM_COLOR_DARK, 
+            -20
+        },
+        {
+            {{ 0.153f, 0.450f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
+            BLOOM_COLOR_DARK, 
+            0
+        },
+        {
+            {{ 0.540f, 0.374f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
+            BLOOM_COLOR_DARK, 
+            0
+        },
+        {
+            {{ 0.438f, 0.188f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
+            BLOOM_COLOR_DARK, 
+            20
+        },
+        {
+            {{ 0.387f, 0.284f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
+            BLOOM_COLOR_DARK, 
+            0
+        },
+        {
+            {{ 0.415f, 0.042f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
+            BLOOM_COLOR_DARK, 
+            0
+        },
+        {
+            {{ 0.220f, 0.042f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
+            BLOOM_COLOR_DARK, 
+            -20
+        },
+        {
+            {{ -0.629f, -0.211f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
+            BLOOM_COLOR_DARK, 
+            0
+        },
+        {
+            {{ -0.707f, 0.022f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
+            BLOOM_COLOR_DARK, 
+            0
+        },
+        {
+            {{ 0.409f, -0.077f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
+            BLOOM_COLOR_DARK, 
+            0
+        },
+        {
+            {{ -0.457f, 0.048f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
+            BLOOM_COLOR_DARK, 
+            0
+        },
+        {
+            {{ -0.399f, 0.185f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
+            BLOOM_COLOR_DARK, 
+            20
+        },
+        {
+            {{ -0.288f, 0.042f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
+            BLOOM_COLOR_DARK, 
+            0
+        },
+        {
+            {{ -0.169f, 0.294f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
+            BLOOM_COLOR_DARK, 
+            0
+        },
+        {
+            {{ -0.268f, 0.419f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
+            BLOOM_COLOR_DARK, 
+            -20
+        },
+        {
+            {{ -0.016f, 0.591f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
+            BLOOM_COLOR_DARK, 
+            -20
+        },
+        {
+            {{ 0.275f, 0.380f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
             BLOOM_COLOR_DARK, 
             -20
         }

@@ -4,7 +4,7 @@
 #include <vector>
 #include "Triangle.h"
 
-#define BLOOM_RADIUS 0.03f
+#define BLOOM_RADIUS 0.027f
 #define BLOOM_COLOR_BACK { 0.956f, 0.8f, 0.792f }
 #define BLOOM_COLOR_DARK { 0.85f, 0.43f, 0.5f }
 #define BLOOM_COLOR_WHITE { 1.0f, 0.98f, 0.98f }
