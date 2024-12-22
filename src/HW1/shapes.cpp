@@ -565,7 +565,7 @@ Tree tree = {
         {
             {{ 0.051f, 0.444f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_BACK, 20},
             BLOOM_COLOR_DARK,
-            -20
+            0
         },
         {
             {{ -0.150f, 0.502f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_BACK, 20},
@@ -580,6 +580,61 @@ Tree tree = {
         {
             {{ 0.313f, 0.236f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_BACK, 20},
             BLOOM_COLOR_DARK,
+            -20
+        },
+        {
+            {{ -0.048f, 0.668f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_LIGHT_PINK, 20},
+            BLOOM_COLOR_LIGHT_PINK,
+            -20
+        },
+        {
+            {{ 0.224f, 0.534f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_LIGHT_PINK, 20},
+            BLOOM_COLOR_LIGHT_PINK,
+            -20
+        },
+        {
+            {{ 0.323f, 0.505f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_LIGHT_PINK, 20},
+            BLOOM_COLOR_LIGHT_PINK,
+            -20
+        },
+        {
+            {{ 0.348f, 0.131f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_LIGHT_PINK, 20},
+            BLOOM_COLOR_LIGHT_PINK,
+            -20
+        },
+        {
+            {{ 0.626f, -0.019f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_LIGHT_PINK, 20},
+            BLOOM_COLOR_LIGHT_PINK,
+            -20
+        },
+        {
+            {{ -0.514f, 0.300f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_LIGHT_PINK, 20},
+            BLOOM_COLOR_LIGHT_PINK,
+            -20
+        },
+        {
+            {{ -0.578f, 0.348f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_LIGHT_PINK, 20},
+            BLOOM_COLOR_LIGHT_PINK,
+            -20
+        },
+        {
+            {{ -0.553f, 0.450f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_LIGHT_PINK, 20},
+            BLOOM_COLOR_LIGHT_PINK,
+            -20
+        },
+        {
+            {{ -0.284f, 0.297f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_LIGHT_PINK, 20},
+            BLOOM_COLOR_LIGHT_PINK,
+            -20
+        },
+        {
+            {{ -0.537f, 0.093f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_LIGHT_PINK, 20},
+            BLOOM_COLOR_LIGHT_PINK,
+            -20
+        },
+        {
+            {{ 0.572f, -0.233f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_LIGHT_PINK, 20},
+            BLOOM_COLOR_LIGHT_PINK,
             -20
         },
         {
@@ -831,6 +886,36 @@ Tree tree = {
             {{ -0.249f, 0.543f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_YELLOW, 20},
             BLOOM_COLOR_DARK, 
             0
+        },
+        {
+            {{ -0.054f, 0.438f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK_LIGHTER, 20},
+            BLOOM_COLOR_DARK, 
+            -20
+        },
+        {
+            {{ -0.137f, 0.406f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK_LIGHTER, 20},
+            BLOOM_COLOR_DARK, 
+            -10
+        },
+        {
+            {{ -0.435f, 0.460f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK_LIGHTER, 20},
+            BLOOM_COLOR_DARK, 
+            -10
+        },
+        {
+            {{ -0.722f, 0.115f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK_LIGHTER, 20},
+            BLOOM_COLOR_DARK, 
+            -10
+        },
+        {
+            {{ -0.377f, -0.064f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK_LIGHTEST, 20},
+            BLOOM_COLOR_DARK, 
+            -20
+        },
+        {
+            {{ 0.249f, 0.160f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK_LIGHTEST, 20},
+            BLOOM_COLOR_DARK, 
+            -20
         }
     }
 };
