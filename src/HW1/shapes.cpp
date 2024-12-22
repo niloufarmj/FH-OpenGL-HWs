@@ -631,6 +631,106 @@ Tree tree = {
             {{ 0.275f, 0.380f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
             BLOOM_COLOR_DARK, 
             -20
+        },
+        {
+            {{ -0.236f, 0.636f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -20
+        },
+        {
+            {{ -0.367f, 0.534f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -10
+        },
+        {
+            {{ -0.358f, 0.387f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -10
+        },
+        {
+            {{ -0.367f, 0.284f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -10
+        },
+        {
+            {{ -0.454f, 0.342f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -10
+        },
+        {
+            {{ -0.540f, 0.390f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -10
+        },
+        {
+            {{ -0.607f, 0.179f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -10
+        },
+        {
+            {{ -0.581f, -0.003f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -5
+        },
+        {
+            {{ 0.482f, -0.105f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -10
+        },
+        {
+            {{ 0.805f, -0.179f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -10
+        },
+        {
+            {{ 0.690f, -0.13f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -10
+        },
+        {
+            {{ 0.665f, 0.022f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -10
+        },
+        {
+            {{ 0.556f, 0.163f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -10
+        },
+        {
+            {{ 0.671f, 0.153f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -10
+        },
+        {
+            {{ 0.482f, 0.310f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -10
+        },
+        {
+            {{ 0.454f, 0.454f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -20
+        },
+        {
+            {{ 0.029f, 0.240f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -20
+        },
+        {
+            {{ 0.195f, 0.335f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -20
+        },
+        {
+            {{ -0.345f, 0.112f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -20
+        },
+        {
+            {{ -0.498f, -0.217f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
+            BLOOM_COLOR_DARK, 
+            -20
         }
     }
 };
