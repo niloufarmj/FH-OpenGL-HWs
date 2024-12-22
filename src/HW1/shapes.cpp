@@ -543,6 +543,51 @@ Tree tree = {
             -20
         },
         {
+            {{ -0.553f, -0.109f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_BACK, 20},
+            BLOOM_COLOR_DARK,
+            -10
+        },
+        {
+            {{ -0.109f, 0.115f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_BACK, 20},
+            BLOOM_COLOR_DARK,
+            -5
+        },
+        {
+            {{ -0.058f, 0.173f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_BACK, 20},
+            BLOOM_COLOR_DARK,
+            -20
+        },
+        {
+            {{ 0.045f, 0.342f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_BACK, 20},
+            BLOOM_COLOR_DARK,
+            -20
+        },
+        {
+            {{ 0.051f, 0.444f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_BACK, 20},
+            BLOOM_COLOR_DARK,
+            -20
+        },
+        {
+            {{ -0.150f, 0.502f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_BACK, 20},
+            BLOOM_COLOR_DARK,
+            -20
+        },
+        {
+            {{ -0.815f, 0.064f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_BACK, 20},
+            BLOOM_COLOR_DARK,
+            -20
+        },
+        {
+            {{ 0.313f, 0.236f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_BACK, 20},
+            BLOOM_COLOR_DARK,
+            -20
+        },
+        {
+            {{ 0.073f, -0.032f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_BACK, 20},
+            BLOOM_COLOR_DARK,
+            -20
+        },
+        {
             {{ 0.332f, -0.259f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_WHITE, 20},
             BLOOM_COLOR_DARK, 
             -20
@@ -736,6 +781,11 @@ Tree tree = {
             {{ -0.812f, -0.182f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_DARK, 20},
             BLOOM_COLOR_DARK, 
             -20
+        },
+        {
+            {{ 0.116f, 0.256f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_BACK, 20},
+            BLOOM_COLOR_DARK,
+            -2
         },
         {
             {{ -0.760f, -0.153f, 0.0f }, BLOOM_RADIUS, BLOOM_COLOR_YELLOW, 20},
