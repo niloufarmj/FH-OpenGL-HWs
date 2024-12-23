@@ -397,13 +397,13 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW2\Triangle.h" />
     <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW2\colorShader.frag">
     </None>
+    <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW2\colorShader.vert">
+    </None>
     <ClCompile Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW2\main.cpp" />
     <ClCompile Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW2\shaders.cpp" />
     <ClInclude Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW2\shaders.h" />
     <ClCompile Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW2\shapes.cpp" />
     <ClInclude Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW2\shapes.h" />
-    <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW2\transform.vert">
-    </None>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

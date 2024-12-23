@@ -21,6 +21,10 @@ const unsigned int HEIGHT = 850;
 
 double mouseX, mouseY;
 extern Tree tree; // Use the existing tree from shapes.cpp
+extern std::vector<Bloom> fallingBlooms;
+
+// Store initial positions of falling blooms
+std::vector<glm::vec3> initialPositions;
 
 void renderScene(const std::vector<Triangle>& triangles) {
     glClearColor(0.956f, 0.8f, 0.792f, 1.0f); // Set background color
@@ -34,6 +38,13 @@ void renderScene(const std::vector<Triangle>& triangles) {
 void renderBloom(const std::vector<Triangle>& triangles, const glm::mat4& transform) {
     for (const auto& triangle : triangles) {
         triangle.draw(transform);
+    }
+}
+
+void tempRender(std::vector<std::vector<Triangle>>& triangles) {
+    for (auto& tris : triangles) {
+        for (auto& triangle : tris)
+            triangle.draw();
     }
 }
 
@@ -92,7 +103,14 @@ int main() {
 
     // Create the scene
     std::vector<Triangle> sceneTriangles = createScene();
-    std::vector<std::vector<Triangle>> allBloomTriangles = creatBloomsSeperately(tree);
+    std::vector<std::vector<Triangle>> allBloomTriangles = creatBloomsSeperately(tree.blooms);
+
+    std::vector<std::vector<Triangle>> newTris = creatBloomsSeperately(fallingBlooms);
+
+    // Store initial positions of falling blooms
+    for (const auto& bloom : fallingBlooms) {
+        initialPositions.push_back(glm::vec3(bloom.cirecleData.center[0], bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
+    }
 
     // Main Loop
     while (!glfwWindowShouldClose(window)) {
@@ -103,7 +121,7 @@ int main() {
 
         // Static scene
         renderScene(sceneTriangles);
-
+        
         // Update and draw all blooms
         for (size_t i = 0; i < tree.blooms.size(); ++i) {
             Bloom& bloom = tree.blooms[i];
@@ -116,6 +134,26 @@ int main() {
             transform = glm::translate(transform, -glm::vec3(bloom.cirecleData.center[0], bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
 
             renderBloom(allBloomTriangles[i], transform);
+        }
+
+        // Update and render falling blooms
+        for (size_t i = 0; i < fallingBlooms.size(); ++i) {
+            Bloom& bloom = fallingBlooms[i];
+            glm::mat4 transform = glm::mat4(1.0f);
+
+            // Update bloom position
+            bloom.cirecleData.center[1] -= 0.0015f; // Adjust falling speed as needed
+             // Debug print
+            std::cout << "Bloom " << i << " position: (" << bloom.cirecleData.center[0] << ", " << bloom.cirecleData.center[1] << ")" << std::endl;
+
+            // Respawn bloom if it goes off the screen
+            if (bloom.cirecleData.center[1] < -1.0f) {
+                bloom.cirecleData.center[1] = initialPositions[i].y;
+                bloom.cirecleData.center[0] = initialPositions[i].x;
+            }
+
+            transform = glm::translate(transform, glm::vec3(0.0f, bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
+            renderBloom(newTris[i], transform);
         }
 
         glfwSwapBuffers(window);

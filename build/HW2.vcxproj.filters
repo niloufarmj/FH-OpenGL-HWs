@@ -30,7 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW2\colorShader.frag" />
-    <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW2\transform.vert" />
+    <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW2\colorShader.vert" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">

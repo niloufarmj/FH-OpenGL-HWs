@@ -950,6 +950,95 @@ Tree tree = {
     }
 };
 
+std::vector<Bloom> fallingBlooms = {
+    // {
+    //     {{ -0.605f, 0.174f, 0.0f }, BLOOM_RADIUS_SMALL, BROWN, 7},
+    //     BLOOM_COLOR_DARK,
+    //     -10
+    // },
+    // {
+    //     {{ -0.578f, -0.003f, 0.0f }, BLOOM_RADIUS_SMALL, BROWN, 7},
+    //     BLOOM_COLOR_DARK,
+    //     -10
+    // },
+    {
+        {{ -0.492f, -0.114f, 0.0f }, BLOOM_RADIUS_SMALL, BLOOM_COLOR_DARK, 10},
+        BLOOM_COLOR_DARK,
+        -10
+    },
+    // {
+    //     {{ 0.492f, -0.099f, 0.0f }, BLOOM_RADIUS_SMALL, BROWN, 7},
+    //     BLOOM_COLOR_DARK,
+    //     -10
+    // },
+    // {
+    //     {{ 0.815f, -0.185f, 0.0f }, BLOOM_RADIUS_SMALL, BROWN, 7},
+    //     BLOOM_COLOR_DARK,
+    //     -10
+    // },
+    // {
+    //     {{ 0.671f, 0.029f, 0.0f }, BLOOM_RADIUS_SMALL, BROWN, 7},
+    //     BLOOM_COLOR_DARK,
+    //     -10
+    // },
+    // {
+    //     {{ 0.559f, 0.160f, 0.0f }, BLOOM_RADIUS_SMALL, BROWN, 7},
+    //     BLOOM_COLOR_DARK,
+    //     -10
+    // },
+    // {
+    //     {{ 0.476f, 0.304f, 0.0f }, BLOOM_RADIUS_SMALL, BROWN, 7},
+    //     BLOOM_COLOR_DARK,
+    //     -10
+    // },
+    // {
+    //     {{ 0.447f, 0.454f, 0.0f }, BLOOM_RADIUS_SMALL, BROWN, 7},
+    //     BLOOM_COLOR_DARK,
+    //     -10
+    // },
+    // {
+    //     {{ 0.185f, 0.323f, 0.0f }, BLOOM_RADIUS_SMALL, BROWN, 7},
+    //     BLOOM_COLOR_DARK,
+    //     -10
+    // },
+    // {
+    //     {{ 0.029f, 0.240f, 0.0f }, BLOOM_RADIUS_SMALL, BROWN, 7},
+    //     BLOOM_COLOR_DARK,
+    //     -10
+    // },
+    // {
+    //     {{ -0.351f, 0.118f, 0.0f }, BLOOM_RADIUS_SMALL, BROWN, 7},
+    //     BLOOM_COLOR_DARK,
+    //     -10
+    // },
+    // {
+    //     {{ -0.367f, 0.537f, 0.0f }, BLOOM_RADIUS_SMALL, BROWN, 7},
+    //     BLOOM_COLOR_DARK,
+    //     -10
+    // },
+    // {
+    //     {{ -0.361f, 0.387f, 0.0f }, BLOOM_RADIUS_SMALL, BROWN, 7},
+    //     BLOOM_COLOR_DARK,
+    //     -10
+    // },
+    // {
+    //     {{ -0.240f, 0.636f, 0.0f }, BLOOM_RADIUS_SMALL, BROWN, 7},
+    //     BLOOM_COLOR_DARK,
+    //     -10
+    // },
+    // {
+    //     {{ -0.134f, 0.636f, 0.0f }, BLOOM_RADIUS_SMALL, BROWN, 7},
+    //     BLOOM_COLOR_DARK,
+    //     -10
+    // },
+    // {
+    //     {{ 0.112f, 0.569f, 0.0f }, BLOOM_RADIUS_SMALL, BROWN, 7},
+    //     BLOOM_COLOR_DARK,
+    //     -10
+    // },
+
+};
+
 std::vector<Triangle> createRectangle(Rectangle& rect) {
     return Triangle::createRectangle(rect.center, rect.width, rect.height, rect.color);
 }
@@ -983,16 +1072,13 @@ std::vector<Triangle> createTree(Tree& tree) {
         std::vector<Triangle> branchRectTriangles = Triangle::createQuad(branch.corners[0], branch.corners[1], branch.corners[2], branch.corners[3], color);
         triangles.insert(triangles.end(), branchRectTriangles.begin(), branchRectTriangles.end());
     }
-
-    
-
     return triangles;
 }
 
-std::vector<std::vector<Triangle>> creatBloomsSeperately(Tree& tree) {
+std::vector<std::vector<Triangle>> creatBloomsSeperately(std::vector<Bloom>& blooms) {
     std::vector<std::vector<Triangle>> allBloomTriangles;
 
-    for (auto& bloom : tree.blooms) {
+    for (auto& bloom : blooms) {
         std::vector<Triangle> bloomTriangles = createBloom(
             bloom.cirecleData.center, 
             bloom.cirecleData.radius, 

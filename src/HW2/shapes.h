@@ -8,6 +8,7 @@
 #include "Triangle.h"
 
 #define BLOOM_RADIUS 0.027f
+#define BLOOM_RADIUS_SMALL 0.017f
 #define BLOOM_COLOR_BACK { 0.956f, 0.8f, 0.792f }
 #define BLOOM_COLOR_DARK { 0.85f, 0.43f, 0.5f }
 #define BLOOM_COLOR_DARK_LIGHTER { 0.97f, 0.53f, 0.6f }
@@ -69,10 +70,11 @@ std::vector<Triangle> createBush(Bush& bush);
 std::vector<Triangle> createBloom(GLfloat* center, GLfloat radius, GLfloat* color, GLfloat* centerColor, int numTriangles, GLfloat rotation, GLfloat dynamicRotation);
 std::vector<Triangle> createTree(Tree& tree);
 std::vector<Triangle> createScene();
-std::vector<std::vector<Triangle>> creatBloomsSeperately(Tree& tree);
+std::vector<std::vector<Triangle>> creatBloomsSeperately(std::vector<Bloom>& blooms);
 
 extern Building buildings[];
 extern Bush bushes[];
 extern Tree tree;
+extern std::vector<Bloom> fallingBlooms;
 
 #endif // SHAPES_H
