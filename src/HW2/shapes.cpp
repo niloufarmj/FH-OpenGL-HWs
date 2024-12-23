@@ -989,16 +989,23 @@ std::vector<Triangle> createTree(Tree& tree) {
     return triangles;
 }
 
-std::vector<Triangle> creatBloomsSeperately(Tree& tree) {
-    std::vector<Triangle> triangles;
+std::vector<std::vector<Triangle>> creatBloomsSeperately(Tree& tree) {
+    std::vector<std::vector<Triangle>> allBloomTriangles;
 
-    //for (auto& bloom : tree.blooms) {
-    Bloom bloom = tree.blooms[30];
-        std::vector<Triangle> bloomTriangles = createBloom(bloom.cirecleData.center, bloom.cirecleData.radius, bloom.cirecleData.color, bloom.centerColor, bloom.cirecleData.numTriangles, bloom.rotation, bloom.dynamicRotation);
-        triangles.insert(triangles.end(), bloomTriangles.begin(), bloomTriangles.end());
-    //}
+    for (auto& bloom : tree.blooms) {
+        std::vector<Triangle> bloomTriangles = createBloom(
+            bloom.cirecleData.center, 
+            bloom.cirecleData.radius, 
+            bloom.cirecleData.color, 
+            bloom.centerColor, 
+            bloom.cirecleData.numTriangles, 
+            bloom.rotation, 
+            bloom.dynamicRotation
+        );
+        allBloomTriangles.push_back(bloomTriangles);
+    }
 
-    return triangles;
+    return allBloomTriangles;
 }
 
 

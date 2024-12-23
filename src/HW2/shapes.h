@@ -69,7 +69,7 @@ std::vector<Triangle> createBush(Bush& bush);
 std::vector<Triangle> createBloom(GLfloat* center, GLfloat radius, GLfloat* color, GLfloat* centerColor, int numTriangles, GLfloat rotation, GLfloat dynamicRotation);
 std::vector<Triangle> createTree(Tree& tree);
 std::vector<Triangle> createScene();
-std::vector<Triangle> creatBloomsSeperately(Tree& tree);
+std::vector<std::vector<Triangle>> creatBloomsSeperately(Tree& tree);
 
 extern Building buildings[];
 extern Bush bushes[];

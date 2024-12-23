@@ -29,7 +29,7 @@ void renderScene(const std::vector<Triangle>& triangles) {
     }
 }
 
-void renderBlooms(const std::vector<Triangle>& triangles, const glm::mat4& transform) {
+void renderBloom(const std::vector<Triangle>& triangles, const glm::mat4& transform) {
     for (const auto& triangle : triangles) {
         triangle.draw(transform);
     }
@@ -65,7 +65,7 @@ int main() {
 
     // Create the scene
     std::vector<Triangle> sceneTriangles = createScene();
-    std::vector<Triangle> bloomTriangles = creatBloomsSeperately(tree);
+    std::vector<std::vector<Triangle>> allBloomTriangles = creatBloomsSeperately(tree);
 
     // Main Loop
     while (!glfwWindowShouldClose(window)) {
@@ -77,21 +77,19 @@ int main() {
         // Static scene
         renderScene(sceneTriangles);
 
-        // Update and draw the single bloom
-        Bloom& bloom = tree.blooms[30];
-        glm::mat4 transform = glm::mat4(1.0f);
-        if (isMouseOverBloom(bloom.cirecleData, mouseX, mouseY, WIDTH, HEIGHT)) {
-            bloom.dynamicRotation += 0.01f; // Adjust rotation speed as needed
-        //std::cout << "Rotation: " << bloom.dynamicRotation << std::endl;
-        //std::cout.flush(); // Ensure the output is flushed
+        // Update and draw all blooms
+        for (size_t i = 0; i < tree.blooms.size(); ++i) {
+            Bloom& bloom = tree.blooms[i];
+            glm::mat4 transform = glm::mat4(1.0f);
+            if (isMouseOverBloom(bloom.cirecleData, mouseX, mouseY, WIDTH, HEIGHT)) {
+                bloom.dynamicRotation += 0.01f; // Adjust rotation speed as needed
+            }
+            transform = glm::translate(transform, glm::vec3(bloom.cirecleData.center[0], bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
+            transform = glm::rotate(transform, bloom.dynamicRotation, glm::vec3(0.0f, 0.0f, 1.0f));
+            transform = glm::translate(transform, -glm::vec3(bloom.cirecleData.center[0], bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
+
+            renderBloom(allBloomTriangles[i], transform);
         }
-        
-
-        transform = glm::translate(transform, glm::vec3(bloom.cirecleData.center[0], bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
-        transform = glm::rotate(transform, bloom.dynamicRotation, glm::vec3(0.0f, 0.0f, 1.0f));
-        transform = glm::translate(transform, -glm::vec3(bloom.cirecleData.center[0], bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
-
-        renderBlooms(bloomTriangles, transform);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
