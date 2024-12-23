@@ -1,0 +1,10 @@
+^D:\FH UNI\RTG\EXERCISE1-DRAW2DSCENE-VBOVAO\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SD:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO" "-BD:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/build" --check-stamp-file "D:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/build/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
