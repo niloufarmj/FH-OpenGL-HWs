@@ -8,6 +8,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -63,6 +65,31 @@ int main() {
                                              "D:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/src/HW2/colorShader.frag");
     glUseProgram(shaderProgram);
 
+    // Load cursor image
+    int cursorWidth, cursorHeight, cursorChannels;
+    unsigned char* cursorImage = stbi_load("D:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/src/HW2/curser.png", &cursorWidth, &cursorHeight, &cursorChannels, 4);
+    if (!cursorImage) {
+        std::cerr << "Failed to load cursor image" << std::endl;
+        return -1;
+    }
+
+    // Create GLFW image
+    GLFWimage glfwImage;
+    glfwImage.width = cursorWidth;
+    glfwImage.height = cursorHeight;
+    glfwImage.pixels = cursorImage;
+
+    // Create GLFW cursor
+    GLFWcursor* cursor = glfwCreateCursor(&glfwImage, 0, 0);
+    if (!cursor) {
+        std::cerr << "Failed to create GLFW cursor" << std::endl;
+        stbi_image_free(cursorImage);
+        return -1;
+    }
+
+    // Set the cursor for the window
+    glfwSetCursor(window, cursor);
+
     // Create the scene
     std::vector<Triangle> sceneTriangles = createScene();
     std::vector<std::vector<Triangle>> allBloomTriangles = creatBloomsSeperately(tree);
@@ -82,7 +109,7 @@ int main() {
             Bloom& bloom = tree.blooms[i];
             glm::mat4 transform = glm::mat4(1.0f);
             if (isMouseOverBloom(bloom.cirecleData, mouseX, mouseY, WIDTH, HEIGHT)) {
-                bloom.dynamicRotation += 0.01f; // Adjust rotation speed as needed
+                bloom.dynamicRotation += 0.02f;
             }
             transform = glm::translate(transform, glm::vec3(bloom.cirecleData.center[0], bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
             transform = glm::rotate(transform, bloom.dynamicRotation, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -95,6 +122,9 @@ int main() {
         glfwPollEvents();
     }
 
+    // Clean up
+    glfwDestroyCursor(cursor);
+    stbi_image_free(cursorImage);
     glfwTerminate();
     return 0;
 }
@@ -121,5 +151,5 @@ bool isMouseOverBloom(const Circle& bloom, double mouseX, double mouseY, int win
     // Check if the mouse is within the bloom's radius
     float dx = x - bloom.center[0];
     float dy = y - bloom.center[1];
-    return (dx * dx + dy * dy) <= (bloom.radius * bloom.radius);
+    return (dx * dx + dy * dy) <= (bloom.radius * bloom.radius * 30);
 }

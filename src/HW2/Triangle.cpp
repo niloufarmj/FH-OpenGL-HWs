@@ -145,3 +145,21 @@ std::vector<Triangle> Triangle::createQuad(GLfloat* p1, GLfloat* p2, GLfloat* p3
 
     return triangles;
 }
+
+bool Triangle::isPointInside(GLfloat x, GLfloat y) const {
+    GLfloat d1, d2, d3;
+    bool has_neg, has_pos;
+
+    d1 = sign(x, y, vertices[0], vertices[1], vertices[3], vertices[4]);
+    d2 = sign(x, y, vertices[3], vertices[4], vertices[6], vertices[7]);
+    d3 = sign(x, y, vertices[6], vertices[7], vertices[0], vertices[1]);
+
+    has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+    has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+    return !(has_neg && has_pos);
+}
+
+GLfloat Triangle::sign(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat x3, GLfloat y3) {
+        return (x1 - x3) * (y2 - y3) - (x2 - x3) * (y1 - y3);
+}

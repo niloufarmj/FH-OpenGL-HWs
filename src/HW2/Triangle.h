@@ -17,6 +17,8 @@ public:
     static std::vector<Triangle> createCircle(GLfloat* center, GLfloat radius, GLfloat* color, int numTriangles);
     static std::vector<Triangle> createRectangle(GLfloat* center, GLfloat width, GLfloat height, GLfloat* color);
     static std::vector<Triangle> createQuad(GLfloat* p1, GLfloat* p2, GLfloat* p3, GLfloat* p4, GLfloat* color);
+    static GLfloat sign(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat x3, GLfloat y3);
+    bool isPointInside(GLfloat x, GLfloat y) const;
 
 private:
     GLfloat* vertices;
