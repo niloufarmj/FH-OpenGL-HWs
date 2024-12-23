@@ -1008,7 +1008,7 @@ std::vector<Triangle> createBloom(
     GLfloat* color, 
     GLfloat* centerColor, 
     int numTriangles, 
-    GLfloat staticRotation, 
+    GLfloat staticRotation,
     GLfloat dynamicRotation
 ) {
     std::vector<Triangle> triangles;
@@ -1031,16 +1031,8 @@ std::vector<Triangle> createBloom(
         // Apply static rotation
         Triangle::rotatePoint(petalCenter[0], petalCenter[1], center[0], center[1], staticRotation);
 
-        // Apply dynamic rotation around the bloom's center
-        glm::mat4 transform = glm::mat4(1.0f);
-        transform = glm::translate(transform, glm::vec3(center[0], center[1], center[2])); // Translate to center
-        transform = glm::rotate(transform, dynamicRotation, glm::vec3(0.0f, 0.0f, 1.0f)); // Apply rotation
-        transform = glm::translate(transform, -glm::vec3(center[0], center[1], center[2])); // Translate back
-
-        glm::vec4 petalCenterVec = transform * glm::vec4(petalCenter[0], petalCenter[1], petalCenter[2], 1.0f);
-
         // Create petal
-        auto petal = Triangle::createCircle(glm::value_ptr(petalCenterVec), radius, color, numTriangles);
+        auto petal = Triangle::createCircle(petalCenter, radius, color, numTriangles);
         triangles.insert(triangles.end(), petal.begin(), petal.end());
     }
 

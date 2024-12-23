@@ -1,5 +1,6 @@
 #include "Triangle.h"
 #include <cmath>
+#include <iostream>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -28,8 +29,20 @@ void Triangle::rotatePoint(GLfloat& x, GLfloat& y, GLfloat cx, GLfloat cy, GLflo
     y = newY + cy;
 }
 
-void Triangle::draw() const {
+void Triangle::draw(const glm::mat4& transform) const {
     glBindVertexArray(vao);
+
+    // Ensure the shader program is active
+    GLint currentProgram;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &currentProgram);
+
+    GLint transformLoc = glGetUniformLocation(currentProgram, "transform");
+    if (transformLoc == -1) {
+        std::cerr << "Could not find uniform 'transform'" << std::endl;
+    } else {
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+    }
+
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 

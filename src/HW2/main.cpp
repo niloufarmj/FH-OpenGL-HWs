@@ -5,7 +5,9 @@
 #include <vector>
 #include "Triangle.h"
 #include "shaders.h"
-
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -24,6 +26,12 @@ void renderScene(const std::vector<Triangle>& triangles) {
 
     for (const auto& triangle : triangles) {
         triangle.draw();
+    }
+}
+
+void renderBlooms(const std::vector<Triangle>& triangles, const glm::mat4& transform) {
+    for (const auto& triangle : triangles) {
+        triangle.draw(transform);
     }
 }
 
@@ -51,14 +59,13 @@ int main() {
     }
 
     // Load shaders
-    unsigned int shaderProgram = loadShaders("D:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/src/HW1/colorShader.vert",
-                                             "D:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/src/HW1/colorShader.frag");
+    unsigned int shaderProgram = loadShaders("D:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/src/HW2/colorShader.vert",
+                                             "D:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/src/HW2/colorShader.frag");
     glUseProgram(shaderProgram);
 
     // Create the scene
     std::vector<Triangle> sceneTriangles = createScene();
     std::vector<Triangle> bloomTriangles = creatBloomsSeperately(tree);
-    std::vector<Triangle> triangles;
 
     // Main Loop
     while (!glfwWindowShouldClose(window)) {
@@ -67,21 +74,25 @@ int main() {
         // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT);
 
+        // Static scene
+        renderScene(sceneTriangles);
+
         // Update and draw the single bloom
         Bloom& bloom = tree.blooms[30];
+        glm::mat4 transform = glm::mat4(1.0f);
         if (isMouseOverBloom(bloom.cirecleData, mouseX, mouseY, WIDTH, HEIGHT)) {
             bloom.dynamicRotation += 0.01f; // Adjust rotation speed as needed
-
-            // Clear and reuse the bloomTriangles vector
-            bloomTriangles.clear();
-            bloomTriangles = creatBloomsSeperately(tree);
+        //std::cout << "Rotation: " << bloom.dynamicRotation << std::endl;
+        //std::cout.flush(); // Ensure the output is flushed
         }
+        
 
-        // Render the static parts of the scene
-        triangles = sceneTriangles;
-        triangles.insert(triangles.end(), bloomTriangles.begin(), bloomTriangles.end());
+        transform = glm::translate(transform, glm::vec3(bloom.cirecleData.center[0], bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
+        transform = glm::rotate(transform, bloom.dynamicRotation, glm::vec3(0.0f, 0.0f, 1.0f));
+        transform = glm::translate(transform, -glm::vec3(bloom.cirecleData.center[0], bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
 
-        renderScene(triangles);
+        renderBlooms(bloomTriangles, transform);
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -90,7 +101,6 @@ int main() {
     return 0;
 }
 
-// ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow* window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);

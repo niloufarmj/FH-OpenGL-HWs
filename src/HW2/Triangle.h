@@ -2,13 +2,16 @@
 #define TRIANGLE_H
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <vector>
 #include <cmath>
 
 class Triangle {
 public:
     Triangle(GLfloat* vertices, GLfloat* color);
-    void draw() const;
+    void draw(const glm::mat4& transform = glm::mat4(1.0f)) const;
     static void rotatePoint(GLfloat& x, GLfloat& y, GLfloat cx, GLfloat cy, GLfloat angle);
 
     static std::vector<Triangle> createCircle(GLfloat* center, GLfloat radius, GLfloat* color, int numTriangles);
