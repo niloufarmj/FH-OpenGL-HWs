@@ -2,6 +2,7 @@
 #include <glfw/glfw3.h>
 #include "Shapes.h"
 #include <iostream>
+#include <random>
 #include <vector>
 #include "Triangle.h"
 #include "shaders.h"
@@ -112,8 +113,16 @@ int main() {
         initialPositions.push_back(glm::vec3(bloom.cirecleData.center[0], bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
     }
 
+    // Create a random number generator
+        std::random_device rd;  // Obtain a random number from hardware
+        std::mt19937 gen(rd()); // Seed the generator
+
+        // Define the range
+        std::uniform_real_distribution<> dis(0, 0.002); // Range [-0.02, 0.02]
+
     // Main Loop
     while (!glfwWindowShouldClose(window)) {
+        
         processInput(window);
 
         // Clear the screen
@@ -142,17 +151,17 @@ int main() {
             glm::mat4 transform = glm::mat4(1.0f);
 
             // Update bloom position
-            bloom.cirecleData.center[1] -= 0.0015f; // Adjust falling speed as needed
-             // Debug print
-            std::cout << "Bloom " << i << " position: (" << bloom.cirecleData.center[0] << ", " << bloom.cirecleData.center[1] << ")" << std::endl;
+            bloom.cirecleData.center[1] -= dis(gen); // Adjust falling speed as needed
 
             // Respawn bloom if it goes off the screen
-            if (bloom.cirecleData.center[1] < -1.0f) {
+            if (bloom.cirecleData.center[1] < -1.1f) {
                 bloom.cirecleData.center[1] = initialPositions[i].y;
                 bloom.cirecleData.center[0] = initialPositions[i].x;
             }
 
+            // Apply the final translation to the current position
             transform = glm::translate(transform, glm::vec3(0.0f, bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
+
             renderBloom(newTris[i], transform);
         }
 
