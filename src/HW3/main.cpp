@@ -29,7 +29,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 const char *APP_NAME = "postprocessing";
-int effectIndex = 0; // 0 for None, 1 for Bloom
+int effectIndex = 0; // 0 for None, 1 for Bloom, 2 for Fog
 
 int main()
 {
@@ -55,6 +55,7 @@ int main()
     Shader brightExtractShader(SRC + "shader.vs.glsl", SRC + "brightExtract.fs.glsl");
     Shader blurShader(SRC + "shader.vs.glsl", SRC + "blur.fs.glsl");
     Shader bloomShader(SRC + "shader.vs.glsl", SRC + "bloom.fs.glsl");
+    Shader fogShader(SRC + "shader.vs.glsl", SRC + "fog.fs.glsl");
     Shader screenShader(SRC + "shader.vs.glsl", SRC + "screenshader.fs.glsl");
 
     Shader *activeShader = &screenShader;
@@ -144,7 +145,7 @@ int main()
 
             ImGui::Text("Effects");
             ImGui::SameLine();
-            const char* effects[] = { "None", "Bloom" };
+            const char* effects[] = { "None", "Bloom", "Fog" };
             ImGui::Combo(" ", &effectIndex, effects, IM_ARRAYSIZE(effects));
 
             ImGui::End();
@@ -199,9 +200,19 @@ int main()
             glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
             renderQuad();
         }
+        else if (effectIndex == 2) // Fog effect
+        {
+            // Render to screen with fog
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            fogShader.use();
+            fogShader.setVec3("fogColor", glm::vec3(0.4f, 0.7f, 0.2f)); // fog color
+            fogShader.setFloat("fogDensity", 0.5f); // fog density
+            glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
+            renderQuad();
+        }
         else // Normal effect
         {
-            // Render to screen without bloom
+            // Render to screen without bloom or fog
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             activeShader->use();
             glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
