@@ -29,7 +29,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 const char *APP_NAME = "postprocessing";
-bool bloomEnabled = false; // Add this variable to track bloom state
+int effectIndex = 0; // 0 for None, 1 for Bloom
 
 int main()
 {
@@ -54,7 +54,7 @@ int main()
     Shader modelShader(SRC + "model.vs.glsl", SRC + "model.fs.glsl");
     Shader brightExtractShader(SRC + "shader.vs.glsl", SRC + "brightExtract.fs.glsl");
     Shader blurShader(SRC + "shader.vs.glsl", SRC + "blur.fs.glsl");
-    Shader finalShader(SRC + "shader.vs.glsl", SRC + "bloom.fs.glsl");
+    Shader bloomShader(SRC + "shader.vs.glsl", SRC + "bloom.fs.glsl");
     Shader screenShader(SRC + "shader.vs.glsl", SRC + "screenshader.fs.glsl");
 
     Shader *activeShader = &screenShader;
@@ -142,15 +142,10 @@ int main()
                 activeShader->setInt("screenTexture", 0);
             }
 
-            if (ImGui::Button("Bloom"))
-            {
-                bloomEnabled = true;
-            }
+            ImGui::Text("Effects");
             ImGui::SameLine();
-            if (ImGui::Button("Normal"))
-            {
-                bloomEnabled = false;
-            }
+            const char* effects[] = { "None", "Bloom" };
+            ImGui::Combo(" ", &effectIndex, effects, IM_ARRAYSIZE(effects));
 
             ImGui::End();
             ImGui::Render();
@@ -171,7 +166,7 @@ int main()
         myModel.Draw(modelShader);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        if (bloomEnabled)
+        if (effectIndex == 1) // Bloom effect
         {
             // 2. Extract bright areas
             glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[0]);
@@ -198,13 +193,13 @@ int main()
 
             // 4. Render to screen with bloom
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            finalShader.use();
+            bloomShader.use();
             glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
             renderQuad();
         }
-        else
+        else // Normal effect
         {
             // Render to screen without bloom
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

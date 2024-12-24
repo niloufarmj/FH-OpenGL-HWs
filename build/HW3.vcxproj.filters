@@ -23,10 +23,13 @@
     <CustomBuild Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\bloom.fs.glsl" />
+    <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\blur.fs.glsl" />
+    <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\brightExtract.fs.glsl" />
     <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\model.fs.glsl" />
     <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\model.vs.glsl" />
     <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\screenshader.fs.glsl" />
-    <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\screenshader.vs.glsl" />
+    <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\shader.vs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">

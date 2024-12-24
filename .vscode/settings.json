@@ -61,6 +61,12 @@
         "xstring": "cpp",
         "xtr1common": "cpp",
         "xutility": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "any": "cpp",
+        "chrono": "cpp",
+        "random": "cpp",
+        "ratio": "cpp",
+        "unordered_set": "cpp",
+        "xtree": "cpp"
     }
 }
