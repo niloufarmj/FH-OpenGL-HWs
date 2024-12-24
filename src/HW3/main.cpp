@@ -29,6 +29,8 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 const char *APP_NAME = "postprocessing";
+bool bloomEnabled = false; // Add this variable to track bloom state
+
 int main()
 {
     glm::vec4 bgColor = {0.1, 0.1, 0.1, 1.0};
@@ -50,11 +52,12 @@ int main()
     const std::string SRC = "../src/HW3/";
 
     Shader modelShader(SRC + "model.vs.glsl", SRC + "model.fs.glsl");
-    Shader brightExtractShader(SRC + "brightExtract.vs.glsl", SRC + "brightExtract.fs.glsl");
-    Shader blurShader(SRC + "blur.vs.glsl", SRC + "blur.fs.glsl");
-    Shader finalShader(SRC + "bloom.vs.glsl", SRC + "bloom.fs.glsl");
+    Shader brightExtractShader(SRC + "shader.vs.glsl", SRC + "brightExtract.fs.glsl");
+    Shader blurShader(SRC + "shader.vs.glsl", SRC + "blur.fs.glsl");
+    Shader finalShader(SRC + "shader.vs.glsl", SRC + "bloom.fs.glsl");
+    Shader screenShader(SRC + "shader.vs.glsl", SRC + "screenshader.fs.glsl");
 
-    Shader *activeShader = &finalShader;
+    Shader *activeShader = &screenShader;
 
     Model myModel("../resources/objects/jesus/scene.gltf", true);
 
@@ -139,6 +142,16 @@ int main()
                 activeShader->setInt("screenTexture", 0);
             }
 
+            if (ImGui::Button("Bloom"))
+            {
+                bloomEnabled = true;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Normal"))
+            {
+                bloomEnabled = false;
+            }
+
             ImGui::End();
             ImGui::Render();
         }
@@ -158,36 +171,47 @@ int main()
         myModel.Draw(modelShader);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // 2. Extract bright areas
-        glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[0]);
-        glClear(GL_COLOR_BUFFER_BIT);
-        brightExtractShader.use();
-        glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
-        renderQuad();
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        // 3. Blur bright areas
-        bool horizontal = true, first_iteration = true;
-        unsigned int amount = 10;
-        blurShader.use();
-        for (unsigned int i = 0; i < amount; i++) {
-            glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
-            blurShader.setInt("horizontal", horizontal);
-            glBindTexture(GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : pingpongColorbuffers[!horizontal]);
+        if (bloomEnabled)
+        {
+            // 2. Extract bright areas
+            glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[0]);
+            glClear(GL_COLOR_BUFFER_BIT);
+            brightExtractShader.use();
+            glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
             renderQuad();
-            horizontal = !horizontal;
-            if (first_iteration)
-                first_iteration = false;
-        }
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // 4. Render to screen
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        finalShader.use();
-        glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
-        renderQuad();
+            // 3. Blur bright areas
+            bool horizontal = true, first_iteration = true;
+            unsigned int amount = 10;
+            blurShader.use();
+            for (unsigned int i = 0; i < amount; i++) {
+                glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
+                blurShader.setInt("horizontal", horizontal);
+                glBindTexture(GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : pingpongColorbuffers[!horizontal]);
+                renderQuad();
+                horizontal = !horizontal;
+                if (first_iteration)
+                    first_iteration = false;
+            }
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+            // 4. Render to screen with bloom
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            finalShader.use();
+            glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
+            renderQuad();
+        }
+        else
+        {
+            // Render to screen without bloom
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            activeShader->use();
+            glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
+            renderQuad();
+        }
 
         if (showWireframe)
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
