@@ -42,10 +42,39 @@ void renderBloom(const std::vector<Triangle>& triangles, const glm::mat4& transf
     }
 }
 
-void tempRender(std::vector<std::vector<Triangle>>& triangles) {
-    for (auto& tris : triangles) {
-        for (auto& triangle : tris)
-            triangle.draw();
+void updateAndRenderFallingBlooms(std::vector<Bloom>& blooms, std::vector<std::vector<Triangle>>& bloomTriangles, std::vector<glm::vec3>& initialPositions, std::uniform_real_distribution<>& dis, std::mt19937& gen) {
+    for (size_t i = 0; i < blooms.size(); ++i) {
+        Bloom& bloom = blooms[i];
+        glm::mat4 transform = glm::mat4(1.0f);
+
+        // Update bloom position
+        bloom.cirecleData.center[1] -= dis(gen); // Adjust falling speed as needed
+
+        // Respawn bloom if it goes off the screen
+        if (bloom.cirecleData.center[1] < -1.1f) {
+            bloom.cirecleData.center[1] = initialPositions[i].y;
+            bloom.cirecleData.center[0] = initialPositions[i].x;
+        }
+
+        // Apply the final translation to the current position
+        transform = glm::translate(transform, glm::vec3(0.0f, bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
+
+        renderBloom(bloomTriangles[i], transform);
+    }
+}
+
+void updateAndRenderRotatingBlooms(std::vector<Bloom>& blooms, std::vector<std::vector<Triangle>>& bloomTriangles) {
+    for (size_t i = 0; i < blooms.size(); ++i) {
+        Bloom& bloom = blooms[i];
+        glm::mat4 transform = glm::mat4(1.0f);
+        if (isMouseOverBloom(bloom.cirecleData, mouseX, mouseY, WIDTH, HEIGHT)) {
+            bloom.dynamicRotation += 0.02f;
+        }
+        transform = glm::translate(transform, glm::vec3(bloom.cirecleData.center[0], bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
+        transform = glm::rotate(transform, bloom.dynamicRotation, glm::vec3(0.0f, 0.0f, 1.0f));
+        transform = glm::translate(transform, -glm::vec3(bloom.cirecleData.center[0], bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
+
+        renderBloom(bloomTriangles[i], transform);
     }
 }
 
@@ -73,8 +102,8 @@ int main() {
     }
 
     // Load shaders
-    unsigned int shaderProgram = loadShaders("D:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/src/HW2/colorShader.vert",
-                                             "D:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/src/HW2/colorShader.frag");
+    unsigned int shaderProgram = loadShaders("D:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/src/HW2/transform.vert",
+                                             "D:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/src/HW2/transform.frag");
     glUseProgram(shaderProgram);
 
     // Load cursor image
@@ -105,8 +134,7 @@ int main() {
     // Create the scene
     std::vector<Triangle> sceneTriangles = createScene();
     std::vector<std::vector<Triangle>> allBloomTriangles = creatBloomsSeperately(tree.blooms);
-
-    std::vector<std::vector<Triangle>> newTris = creatBloomsSeperately(fallingBlooms);
+    std::vector<std::vector<Triangle>> fallingBloomsTriangles = creatBloomsSeperately(fallingBlooms);
 
     // Store initial positions of falling blooms
     for (const auto& bloom : fallingBlooms) {
@@ -114,11 +142,11 @@ int main() {
     }
 
     // Create a random number generator
-        std::random_device rd;  // Obtain a random number from hardware
-        std::mt19937 gen(rd()); // Seed the generator
+    std::random_device rd;  // Obtain a random number from hardware
+    std::mt19937 gen(rd()); // Seed the generator
 
-        // Define the range
-        std::uniform_real_distribution<> dis(0, 0.002); // Range [-0.02, 0.02]
+    // Define the range
+    std::uniform_real_distribution<> dis(0, 0.002); // Range [-0.02, 0.02]
 
     // Main Loop
     while (!glfwWindowShouldClose(window)) {
@@ -130,40 +158,10 @@ int main() {
 
         // Static scene
         renderScene(sceneTriangles);
-        
-        // Update and draw all blooms
-        for (size_t i = 0; i < tree.blooms.size(); ++i) {
-            Bloom& bloom = tree.blooms[i];
-            glm::mat4 transform = glm::mat4(1.0f);
-            if (isMouseOverBloom(bloom.cirecleData, mouseX, mouseY, WIDTH, HEIGHT)) {
-                bloom.dynamicRotation += 0.02f;
-            }
-            transform = glm::translate(transform, glm::vec3(bloom.cirecleData.center[0], bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
-            transform = glm::rotate(transform, bloom.dynamicRotation, glm::vec3(0.0f, 0.0f, 1.0f));
-            transform = glm::translate(transform, -glm::vec3(bloom.cirecleData.center[0], bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
 
-            renderBloom(allBloomTriangles[i], transform);
-        }
+        updateAndRenderRotatingBlooms(tree.blooms, allBloomTriangles);
 
-        // Update and render falling blooms
-        for (size_t i = 0; i < fallingBlooms.size(); ++i) {
-            Bloom& bloom = fallingBlooms[i];
-            glm::mat4 transform = glm::mat4(1.0f);
-
-            // Update bloom position
-            bloom.cirecleData.center[1] -= dis(gen); // Adjust falling speed as needed
-
-            // Respawn bloom if it goes off the screen
-            if (bloom.cirecleData.center[1] < -1.1f) {
-                bloom.cirecleData.center[1] = initialPositions[i].y;
-                bloom.cirecleData.center[0] = initialPositions[i].x;
-            }
-
-            // Apply the final translation to the current position
-            transform = glm::translate(transform, glm::vec3(0.0f, bloom.cirecleData.center[1], bloom.cirecleData.center[2]));
-
-            renderBloom(newTris[i], transform);
-        }
+        updateAndRenderFallingBlooms(fallingBlooms, fallingBloomsTriangles, initialPositions, dis, gen);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
