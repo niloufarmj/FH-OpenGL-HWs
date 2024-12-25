@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "D:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/bin/MinSizeRel/HW3.exe"
+			"path" : "D:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/bin/HW3.exe"
 		},
 		{
-			"path" : "D:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/bin/MinSizeRel/HW3.pdb"
+			"path" : "D:/FH Uni/rtg/Exercise1-Draw2DScene-VBOVAO/bin/HW3.pdb"
 		}
 	],
 	"backtrace" : 2,
@@ -90,7 +90,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O1 /Ob1 /DNDEBUG -std:c++17"
+					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG -std:c++17"
 				}
 			],
 			"defines" : 
@@ -123,7 +123,7 @@
 			},
 			"sourceIndexes" : 
 			[
-				5
+				6
 			]
 		}
 	],
@@ -139,7 +139,7 @@
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O1 /Ob1 /DNDEBUG",
+				"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG",
 				"role" : "flags"
 			},
 			{
@@ -199,10 +199,11 @@
 				0,
 				1,
 				2,
-				6,
+				4,
 				7,
-				9,
-				11
+				8,
+				10,
+				12
 			]
 		},
 		{
@@ -210,16 +211,16 @@
 			"sourceIndexes" : 
 			[
 				3,
-				4,
-				8,
-				10
+				5,
+				9,
+				11
 			]
 		},
 		{
 			"name" : "Source Files",
 			"sourceIndexes" : 
 			[
-				5
+				6
 			]
 		}
 	],
@@ -244,6 +245,11 @@
 			"backtrace" : 2,
 			"path" : "src/HW3/callbacks.h",
 			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"path" : "src/HW3/fog.fs.glsl",
+			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 2,

@@ -145,7 +145,7 @@ int main()
 
             ImGui::Text("Effects");
             ImGui::SameLine();
-            const char* effects[] = { "None", "Bloom", "Fog" };
+            const char* effects[] = { "None", "Blur", "Bloom", "Fog" };
             ImGui::Combo(" ", &effectIndex, effects, IM_ARRAYSIZE(effects));
 
             ImGui::End();
@@ -167,7 +167,31 @@ int main()
         myModel.Draw(modelShader);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        if (effectIndex == 1) // Bloom effect
+        if (effectIndex == 1) // Blur effect
+        {
+            // Apply blur shader directly
+            bool horizontal = true, first_iteration = true;
+            unsigned int amount = 10;
+            blurShader.use();
+            blurShader.setVec2("pixelSize", glm::vec2(1.0f / SCR_WIDTH, 1.0f / SCR_HEIGHT));
+            for (unsigned int i = 0; i < amount; i++) {
+                glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
+                blurShader.setInt("horizontal", horizontal);
+                glBindTexture(GL_TEXTURE_2D, first_iteration ? colorBuffers[0] : pingpongColorbuffers[!horizontal]);
+                renderQuad();
+                horizontal = !horizontal;
+                if (first_iteration)
+                    first_iteration = false;
+            }
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+            // Render to screen with blur
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            activeShader->use();
+            glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
+            renderQuad();
+        }
+        else if (effectIndex == 2) // Bloom effect
         {
             // 2. Extract bright areas
             glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[0]);
@@ -181,6 +205,7 @@ int main()
             bool horizontal = true, first_iteration = true;
             unsigned int amount = 10;
             blurShader.use();
+            blurShader.setVec2("pixelSize", glm::vec2(1.0f / SCR_WIDTH, 1.0f / SCR_HEIGHT));
             for (unsigned int i = 0; i < amount; i++) {
                 glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
                 blurShader.setInt("horizontal", horizontal);
@@ -200,7 +225,7 @@ int main()
             glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
             renderQuad();
         }
-        else if (effectIndex == 2) // Fog effect
+        else if (effectIndex == 3) // Fog effect
         {
             // Render to screen with fog
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -212,7 +237,7 @@ int main()
         }
         else // Normal effect
         {
-            // Render to screen without bloom or fog
+            // Render to screen without blur, bloom, or fog
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             activeShader->use();
             glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);

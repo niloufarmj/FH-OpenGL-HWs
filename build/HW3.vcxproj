@@ -400,6 +400,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\brightExtract.fs.glsl">
     </None>
     <ClInclude Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\callbacks.h" />
+    <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\fog.fs.glsl">
+    </None>
     <ClInclude Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\input.h" />
     <ClCompile Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\main.cpp" />
     <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\model.fs.glsl">

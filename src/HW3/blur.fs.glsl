@@ -2,17 +2,43 @@
 out vec4 FragColor;
 in vec2 TexCoords;
 
+uniform vec2 pixelSize;
 uniform sampler2D image;
 uniform bool horizontal;
 
-void main() {
-    vec2 tex_offset = 1.0 / textureSize(image, 0); // gets size of single texel
+void main()
+{
+    vec2 pos = TexCoords;
+    
+    // Gaussian weights
+    float values[9];
+    values[0] = 0.05;
+    values[1] = 0.09;
+    values[2] = 0.11;
+    values[3] = 0.15;
+    values[4] = 0.2;
+    values[5] = 0.15;
+    values[6] = 0.11;
+    values[7] = 0.09;
+    values[8] = 0.05;
+
     vec3 result = vec3(0.0);
-    float weight[5] = float[5](0.0, 0.0, 0.0, 0.0, 0.0);
-    for (int i = -4; i < 5; ++i) {
-        for (int j = -4; j < 5; ++j) {
-            vec2 offset = horizontal ? vec2(tex_offset.x * float(i), 0.0) : vec2(0.0, tex_offset.y * float(j));
-            result += texture(image, TexCoords + offset).rgb * weight[abs(i)];
+    if (horizontal)
+    {
+        vec2 curSamplePos = vec2(pos.x - 4.0 * pixelSize.x, pos.y);
+        for (int i = 0; i < 9; i++)
+        {
+            result += texture(image, curSamplePos).rgb * values[i];
+            curSamplePos.x += pixelSize.x;
+        }
+    }
+    else
+    {
+        vec2 curSamplePos = vec2(pos.x, pos.y - 4.0 * pixelSize.y);
+        for (int i = 0; i < 9; i++)
+        {
+            result += texture(image, curSamplePos).rgb * values[i];
+            curSamplePos.y += pixelSize.y;
         }
     }
     FragColor = vec4(result, 1.0);
