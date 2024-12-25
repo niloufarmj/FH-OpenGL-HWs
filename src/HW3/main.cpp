@@ -1,21 +1,4 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <util/shader.h>
-#include <util/camera.h>
-#include <util/model.h>
-#include <util/assets.h>
-#include <util/window.h>
-
-#include <iostream>
-#include "callbacks.h"
-#include "rendering.h"
-#include "settings.h"
-#include "input.h"
+#include "common.h"
 
 Camera camera(initialPosition, glm::vec3(0.0f, -1.0f, 0.0f), initialYaw, initialPitch);
 float lastX = (float)SCR_WIDTH / 2.0f;
@@ -29,7 +12,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 const char *APP_NAME = "postprocessing";
-int effectIndex = 0; // 0 for None, 1 for Bloom, 2 for Fog
+int effectIndex = 0; // 0 for None, 1 for Blur, 2 for Bloom
 
 int main()
 {
@@ -55,7 +38,6 @@ int main()
     Shader brightExtractShader(SRC + "shader.vs.glsl", SRC + "brightExtract.fs.glsl");
     Shader blurShader(SRC + "shader.vs.glsl", SRC + "blur.fs.glsl");
     Shader bloomShader(SRC + "shader.vs.glsl", SRC + "bloom.fs.glsl");
-    Shader fogShader(SRC + "shader.vs.glsl", SRC + "fog.fs.glsl");
     Shader screenShader(SRC + "shader.vs.glsl", SRC + "screenshader.fs.glsl");
 
     Shader *activeShader = &screenShader;
@@ -68,49 +50,12 @@ int main()
     activeShader->use();
     activeShader->setInt("screenTexture", 0);
 
-    // Create framebuffer for HDR rendering
-    unsigned int hdrFBO;
-    glGenFramebuffers(1, &hdrFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
+    // Create framebuffer object
+    Framebuffer framebuffer(SCR_WIDTH, SCR_HEIGHT);
 
-    unsigned int colorBuffers[2];
-    glGenTextures(2, colorBuffers);
-    for (unsigned int i = 0; i < 2; i++) {
-        glBindTexture(GL_TEXTURE_2D, colorBuffers[i]);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, colorBuffers[i], 0);
-    }
-    unsigned int rboDepth;
-    glGenRenderbuffers(1, &rboDepth);
-    glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
-
-    unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-    glDrawBuffers(2, attachments);
-
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "Framebuffer not complete!" << std::endl;
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    // Ping-pong framebuffers for blurring
-    unsigned int pingpongFBO[2];
-    unsigned int pingpongColorbuffers[2];
-    glGenFramebuffers(2, pingpongFBO);
-    glGenTextures(2, pingpongColorbuffers);
-    for (unsigned int i = 0; i < 2; i++) {
-        glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[i]);
-        glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[i]);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_FLOAT, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongColorbuffers[i], 0);
-
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            std::cout << "Framebuffer not complete!" << std::endl;
-    }
+    // Create effect objects
+    BlurEffect blurEffect(framebuffer);
+    BloomEffect bloomEffect(framebuffer, brightExtractShader, blurShader, bloomShader);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -145,7 +90,7 @@ int main()
 
             ImGui::Text("Effects");
             ImGui::SameLine();
-            const char* effects[] = { "None", "Blur", "Bloom", "Fog" };
+            const char* effects[] = { "None", "Blur", "Bloom" };
             ImGui::Combo(" ", &effectIndex, effects, IM_ARRAYSIZE(effects));
 
             ImGui::End();
@@ -153,7 +98,7 @@ int main()
         }
 
         // 1. Render scene into floating point framebuffer
-        glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.FBO);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         modelShader.use();
         glm::mat4 model = glm::mat4(1.0f);
@@ -169,78 +114,33 @@ int main()
 
         if (effectIndex == 1) // Blur effect
         {
-            // Apply blur shader directly
-            bool horizontal = true, first_iteration = true;
-            unsigned int amount = 10;
-            blurShader.use();
-            blurShader.setVec2("pixelSize", glm::vec2(1.0f / SCR_WIDTH, 1.0f / SCR_HEIGHT));
-            for (unsigned int i = 0; i < amount; i++) {
-                glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
-                blurShader.setInt("horizontal", horizontal);
-                glBindTexture(GL_TEXTURE_2D, first_iteration ? colorBuffers[0] : pingpongColorbuffers[!horizontal]);
-                renderQuad();
-                horizontal = !horizontal;
-                if (first_iteration)
-                    first_iteration = false;
-            }
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            blurEffect.apply(blurShader, framebuffer.colorBuffers[0], SCR_WIDTH, SCR_HEIGHT);
 
             // Render to screen with blur
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             activeShader->use();
-            glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
+            glBindTexture(GL_TEXTURE_2D, framebuffer.pingpongColorbuffers[0]);
             renderQuad();
         }
         else if (effectIndex == 2) // Bloom effect
         {
-            // 2. Extract bright areas
-            glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[0]);
-            glClear(GL_COLOR_BUFFER_BIT);
-            brightExtractShader.use();
-            glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
-            renderQuad();
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-            // 3. Blur bright areas
-            bool horizontal = true, first_iteration = true;
-            unsigned int amount = 10;
-            blurShader.use();
-            blurShader.setVec2("pixelSize", glm::vec2(1.0f / SCR_WIDTH, 1.0f / SCR_HEIGHT));
-            for (unsigned int i = 0; i < amount; i++) {
-                glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
-                blurShader.setInt("horizontal", horizontal);
-                glBindTexture(GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : pingpongColorbuffers[!horizontal]);
-                renderQuad();
-                horizontal = !horizontal;
-                if (first_iteration)
-                    first_iteration = false;
-            }
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            bloomEffect.apply(bloomShader, framebuffer.colorBuffers[0], SCR_WIDTH, SCR_HEIGHT);
 
             // 4. Render to screen with bloom
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             bloomShader.use();
-            glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
+            glBindTexture(GL_TEXTURE_2D, framebuffer.colorBuffers[0]);
             glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
+            glBindTexture(GL_TEXTURE_2D, framebuffer.pingpongColorbuffers[0]);
             renderQuad();
         }
-        else if (effectIndex == 3) // Fog effect
-        {
-            // Render to screen with fog
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            fogShader.use();
-            fogShader.setVec3("fogColor", glm::vec3(0.4f, 0.7f, 0.2f)); // fog color
-            fogShader.setFloat("fogDensity", 0.5f); // fog density
-            glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
-            renderQuad();
-        }
+        
         else // Normal effect
         {
             // Render to screen without blur, bloom, or fog
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             activeShader->use();
-            glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
+            glBindTexture(GL_TEXTURE_2D, framebuffer.colorBuffers[0]);
             renderQuad();
         }
 
