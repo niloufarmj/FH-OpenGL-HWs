@@ -23,6 +23,5 @@
 #include "BlurEffect.h"
 #include "BloomEffect.h"
 #include "brightExtractEffect.h"
-#include "FogEffect.h"
 
 #endif // COMMON_H
