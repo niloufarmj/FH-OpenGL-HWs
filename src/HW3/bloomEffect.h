@@ -17,7 +17,6 @@ public:
 
     void apply(Shader& shader, unsigned int texture, unsigned int width, unsigned int height) override {
         // 2. Extract bright areas
-
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.pingpongFBO[0]);
         glClear(GL_COLOR_BUFFER_BIT);
         brightExtractShader.use();
@@ -25,14 +24,14 @@ public:
         renderQuad();
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // // 3. Blur bright areas
+        // 3. Blur bright areas
         bool horizontal = true, first_iteration = true;
         blurShader.use();
         blurShader.setVec2("pixelSize", glm::vec2(1.0f / width, 1.0f / height));
         for (unsigned int i = 0; i < amount; i++) {
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.pingpongFBO[horizontal]);
             blurShader.setInt("horizontal", horizontal);
-            glBindTexture(GL_TEXTURE_2D, first_iteration ? framebuffer.colorBuffers[1] : framebuffer.pingpongColorbuffers[!horizontal]);
+            glBindTexture(GL_TEXTURE_2D, first_iteration ? framebuffer.pingpongColorbuffers[0] : framebuffer.pingpongColorbuffers[!horizontal]);
             renderQuad();
             horizontal = !horizontal;
             if (first_iteration)

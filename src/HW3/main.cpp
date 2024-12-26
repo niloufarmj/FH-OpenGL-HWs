@@ -90,7 +90,7 @@ int main()
 
             ImGui::Text("Effects");
             ImGui::SameLine();
-            const char* effects[] = { "None", "Blur", "Bloom" };
+            const char* effects[] = { "None", "Blur", "BrightExtract", "Bloom" };
             ImGui::Combo(" ", &effectIndex, effects, IM_ARRAYSIZE(effects));
 
             ImGui::End();
@@ -122,7 +122,22 @@ int main()
             glBindTexture(GL_TEXTURE_2D, framebuffer.pingpongColorbuffers[0]);
             renderQuad();
         }
-        else if (effectIndex == 2) // Bloom effect
+        else if (effectIndex == 2) // Bright Extract effect
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.pingpongFBO[0]);
+            glClear(GL_COLOR_BUFFER_BIT);
+            brightExtractShader.use();
+            glBindTexture(GL_TEXTURE_2D, framebuffer.colorBuffers[0]);
+            renderQuad();
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+            // Render the bright extract output to the screen for debugging
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            activeShader->use();
+            glBindTexture(GL_TEXTURE_2D, framebuffer.pingpongColorbuffers[0]);
+            renderQuad();
+        }
+        else if (effectIndex == 3) // Bloom effect
         {
             bloomEffect.apply(bloomShader, framebuffer.colorBuffers[0], SCR_WIDTH, SCR_HEIGHT);
 
@@ -134,7 +149,6 @@ int main()
             glBindTexture(GL_TEXTURE_2D, framebuffer.pingpongColorbuffers[0]);
             renderQuad();
         }
-        
         else // Normal effect
         {
             // Render to screen without blur, bloom, or fog
