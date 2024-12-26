@@ -7,14 +7,17 @@
 class BlurEffect : public Effect {
 public:
     Framebuffer& framebuffer;
+    Shader& shader;
     unsigned int amount;
 
-    BlurEffect(Framebuffer& framebuffer, unsigned int amount = 10) : framebuffer(framebuffer), amount(amount) {}
+    BlurEffect(Framebuffer& framebuffer, Shader& shader, unsigned int amount = 10) 
+        : framebuffer(framebuffer), shader(shader), amount(amount) {}
 
-    void apply(Shader& shader, unsigned int texture, unsigned int width, unsigned int height) override {
+    void apply(Shader& shader, unsigned int texture, unsigned int width, unsigned int height, float kernelSize) override {
         bool horizontal = true, first_iteration = true;
         shader.use();
         shader.setVec2("pixelSize", glm::vec2(1.0f / width, 1.0f / height));
+        shader.setFloat("kernelSize", kernelSize / 5); // Pass kernel size to shader
         for (unsigned int i = 0; i < amount; i++) {
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.pingpongFBO[horizontal]);
             shader.setInt("horizontal", horizontal);

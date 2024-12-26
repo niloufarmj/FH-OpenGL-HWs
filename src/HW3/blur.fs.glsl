@@ -5,6 +5,7 @@ in vec2 TexCoords;
 uniform vec2 pixelSize;
 uniform sampler2D image;
 uniform bool horizontal;
+uniform float kernelSize; // Add kernel size uniform
 
 void main()
 {
@@ -25,20 +26,20 @@ void main()
     vec3 result = vec3(0.0);
     if (horizontal)
     {
-        vec2 curSamplePos = vec2(pos.x - 4.0 * pixelSize.x, pos.y);
+        vec2 curSamplePos = vec2(pos.x - 4.0 * pixelSize.x * kernelSize, pos.y);
         for (int i = 0; i < 9; i++)
         {
             result += texture(image, curSamplePos).rgb * values[i];
-            curSamplePos.x += pixelSize.x;
+            curSamplePos.x += pixelSize.x * kernelSize;
         }
     }
     else
     {
-        vec2 curSamplePos = vec2(pos.x, pos.y - 4.0 * pixelSize.y);
+        vec2 curSamplePos = vec2(pos.x, pos.y - 4.0 * pixelSize.y * kernelSize);
         for (int i = 0; i < 9; i++)
         {
             result += texture(image, curSamplePos).rgb * values[i];
-            curSamplePos.y += pixelSize.y;
+            curSamplePos.y += pixelSize.y * kernelSize;
         }
     }
     FragColor = vec4(result, 1.0);

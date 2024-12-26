@@ -8,7 +8,7 @@
 
 class Effect {
 public:
-    virtual void apply(Shader& shader, unsigned int texture, unsigned int width, unsigned int height) = 0;
+    virtual void apply(Shader& shader, unsigned int texture, unsigned int width, unsigned int height, float kernelSize) = 0;
 };
 
 #endif // EFFECT_H

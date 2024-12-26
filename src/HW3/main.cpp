@@ -13,7 +13,8 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 const char *APP_NAME = "postprocessing";
-int effectIndex = 0; // 0 for None, 1 for Blur, 2 for Bloom
+int effectIndex = 0; // 0 for None, 1 for Blur, 2 for BrightExtract, 3 for Bloom
+float kernelSize = 1.0f; // Initial value
 
 int main()
 {
@@ -55,9 +56,9 @@ int main()
     Framebuffer framebuffer(SCR_WIDTH, SCR_HEIGHT);
 
     // Create effect objects
-    BlurEffect blurEffect(framebuffer);
-    BrightExtractEffect brightExtractEffect(framebuffer);
-    BloomEffect bloomEffect(framebuffer, brightExtractShader, blurShader, bloomShader);
+    BlurEffect blurEffect(framebuffer, blurShader);
+    BrightExtractEffect brightExtractEffect(framebuffer, brightExtractShader);
+    BloomEffect bloomEffect(framebuffer, brightExtractEffect, blurEffect, bloomShader);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -95,6 +96,8 @@ int main()
             const char* effects[] = { "None", "Blur", "BrightExtract", "Bloom" };
             ImGui::Combo(" ", &effectIndex, effects, IM_ARRAYSIZE(effects));
 
+            ImGui::SliderFloat("Kernel Size", &kernelSize, 1.0f, 10.0f);
+
             ImGui::End();
             ImGui::Render();
         }
@@ -116,7 +119,7 @@ int main()
 
         if (effectIndex == 1) // Blur effect
         {
-            blurEffect.apply(blurShader, framebuffer.colorBuffers[0], SCR_WIDTH, SCR_HEIGHT);
+            blurEffect.apply(blurShader, framebuffer.colorBuffers[0], SCR_WIDTH, SCR_HEIGHT, kernelSize);
 
             // Render to screen with blur
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -126,7 +129,7 @@ int main()
         }
         else if (effectIndex == 2) // Bright Extract effect
         {
-            brightExtractEffect.apply(brightExtractShader, framebuffer.colorBuffers[0], SCR_WIDTH, SCR_HEIGHT);
+            brightExtractEffect.apply(brightExtractShader, framebuffer.colorBuffers[0], SCR_WIDTH, SCR_HEIGHT, kernelSize);
 
             // Render the bright extract output to the screen for debugging
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -136,7 +139,7 @@ int main()
         }
         else if (effectIndex == 3) // Bloom effect
         {
-            bloomEffect.apply(bloomShader, framebuffer.colorBuffers[0], SCR_WIDTH, SCR_HEIGHT);
+            bloomEffect.apply(bloomShader, framebuffer.colorBuffers[0], SCR_WIDTH, SCR_HEIGHT, kernelSize);
 
             
         }

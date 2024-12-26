@@ -3,43 +3,26 @@
 
 #include "Effect.h"
 #include "Framebuffer.h"
+#include "BrightExtractEffect.h"
+#include "BlurEffect.h"
 
 class BloomEffect : public Effect {
 public:
     Framebuffer& framebuffer;
-    Shader& brightExtractShader;
-    Shader& blurShader;
+    BrightExtractEffect& brightExtractEffect;
+    BlurEffect& blurEffect;
     Shader& bloomShader;
     unsigned int amount;
 
-    BloomEffect(Framebuffer& framebuffer, Shader& brightExtractShader, Shader& blurShader, Shader& bloomShader, unsigned int amount = 10)
-        : framebuffer(framebuffer), brightExtractShader(brightExtractShader), blurShader(blurShader), bloomShader(bloomShader), amount(amount) {}
+    BloomEffect(Framebuffer& framebuffer, BrightExtractEffect& brightExtractEffect, BlurEffect& blurEffect, Shader& bloomShader, unsigned int amount = 10)
+        : framebuffer(framebuffer), brightExtractEffect(brightExtractEffect), blurEffect(blurEffect), bloomShader(bloomShader), amount(amount) {}
 
-    void apply(Shader& shader, unsigned int texture, unsigned int width, unsigned int height) override {
+    void apply(Shader& shader, unsigned int texture, unsigned int width, unsigned int height, float kernelSize) override {
         // 1. Extract bright areas
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.pingpongFBO[0]);
-        glClear(GL_COLOR_BUFFER_BIT);
-        brightExtractShader.use();
-        glBindTexture(GL_TEXTURE_2D, texture);
-        renderQuad();
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+        brightExtractEffect.apply(brightExtractEffect.shader, texture, width, height, kernelSize);
 
         // 2. Blur bright areas
-        bool horizontal = true, first_iteration = true;
-        blurShader.use();
-        blurShader.setVec2("pixelSize", glm::vec2(1.0f / width, 1.0f / height));
-        for (unsigned int i = 0; i < amount; i++) {
-            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.pingpongFBO[horizontal]);
-            blurShader.setInt("horizontal", horizontal);
-            glBindTexture(GL_TEXTURE_2D, first_iteration ? framebuffer.pingpongColorbuffers[0] : framebuffer.pingpongColorbuffers[!horizontal]);
-            renderQuad();
-            horizontal = !horizontal;
-            if (first_iteration)
-                first_iteration = false;
-        }
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+        blurEffect.apply(blurEffect.shader, framebuffer.pingpongColorbuffers[0], width, height, kernelSize);
 
         // 3. Render to screen with bloom
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -47,11 +30,11 @@ public:
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, framebuffer.colorBuffers[0]);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, framebuffer.pingpongColorbuffers[!horizontal]);
+        glBindTexture(GL_TEXTURE_2D, framebuffer.pingpongColorbuffers[0]);
         bloomShader.setInt("scene", 0);
         bloomShader.setInt("bloomBlur", 1);
         renderQuad();
-        }
+    }
 };
 
 #endif // BLOOM_EFFECT_H
