@@ -1,5 +1,6 @@
 #include "common.h"
 
+
 Camera camera(initialPosition, glm::vec3(0.0f, -1.0f, 0.0f), initialYaw, initialPitch);
 float lastX = (float)SCR_WIDTH / 2.0f;
 float lastY = (float)SCR_HEIGHT / 2.0f;
@@ -55,6 +56,7 @@ int main()
 
     // Create effect objects
     BlurEffect blurEffect(framebuffer);
+    BrightExtractEffect brightExtractEffect(framebuffer);
     BloomEffect bloomEffect(framebuffer, brightExtractShader, blurShader, bloomShader);
 
     while (!glfwWindowShouldClose(window))
@@ -124,12 +126,7 @@ int main()
         }
         else if (effectIndex == 2) // Bright Extract effect
         {
-            glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.pingpongFBO[0]);
-            glClear(GL_COLOR_BUFFER_BIT);
-            brightExtractShader.use();
-            glBindTexture(GL_TEXTURE_2D, framebuffer.colorBuffers[0]);
-            renderQuad();
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            brightExtractEffect.apply(brightExtractShader, framebuffer.colorBuffers[0], SCR_WIDTH, SCR_HEIGHT);
 
             // Render the bright extract output to the screen for debugging
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -141,13 +138,7 @@ int main()
         {
             bloomEffect.apply(bloomShader, framebuffer.colorBuffers[0], SCR_WIDTH, SCR_HEIGHT);
 
-            // 4. Render to screen with bloom
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            bloomShader.use();
-            glBindTexture(GL_TEXTURE_2D, framebuffer.colorBuffers[0]);
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, framebuffer.pingpongColorbuffers[0]);
-            renderQuad();
+            
         }
         else // Normal effect
         {

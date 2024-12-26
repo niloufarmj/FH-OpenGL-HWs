@@ -16,7 +16,7 @@ public:
         : framebuffer(framebuffer), brightExtractShader(brightExtractShader), blurShader(blurShader), bloomShader(bloomShader), amount(amount) {}
 
     void apply(Shader& shader, unsigned int texture, unsigned int width, unsigned int height) override {
-        // 2. Extract bright areas
+        // 1. Extract bright areas
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.pingpongFBO[0]);
         glClear(GL_COLOR_BUFFER_BIT);
         brightExtractShader.use();
@@ -24,7 +24,8 @@ public:
         renderQuad();
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        // 3. Blur bright areas
+
+        // 2. Blur bright areas
         bool horizontal = true, first_iteration = true;
         blurShader.use();
         blurShader.setVec2("pixelSize", glm::vec2(1.0f / width, 1.0f / height));
@@ -38,7 +39,19 @@ public:
                 first_iteration = false;
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    }
+
+
+        // 3. Render to screen with bloom
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        bloomShader.use();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, framebuffer.colorBuffers[0]);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, framebuffer.pingpongColorbuffers[!horizontal]);
+        bloomShader.setInt("scene", 0);
+        bloomShader.setInt("bloomBlur", 1);
+        renderQuad();
+        }
 };
 
 #endif // BLOOM_EFFECT_H

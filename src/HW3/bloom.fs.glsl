@@ -8,6 +8,6 @@ uniform sampler2D bloomBlur;
 void main() {
     vec3 hdrColor = texture(scene, TexCoords).rgb;
     vec3 bloomColor = texture(bloomBlur, TexCoords).rgb;
-    hdrColor += bloomColor; // additive blending
+    hdrColor += bloomColor; // Additive blending
     FragColor = vec4(hdrColor, 1.0);
 }
