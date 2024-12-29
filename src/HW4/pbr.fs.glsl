@@ -19,6 +19,7 @@ uniform sampler2D normalMap;
 uniform sampler2D metallicMap;
 uniform sampler2D roughnessMap;
 uniform sampler2D aoMap;
+uniform sampler2D heightMap;
 
 // lights
 uniform vec3 lightPositions[4];
@@ -33,14 +34,23 @@ const float PI = 3.14159265359;
 // Don't worry if you don't get what's going on; you generally want to do normal 
 // mapping the usual way for performance anways; I do plan make a note of this 
 // technique somewhere later in the normal mapping tutorial.
-vec3 getNormalFromMap()
+
+vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
 {
-    vec3 tangentNormal = texture(normalMap, TexCoords).xyz * 2.0 - 1.0;
+    float height = texture(heightMap, texCoords).r;
+    float heightScale = 0.1; // Adjust this value to control the depth effect
+    vec2 p = viewDir.xy * (height * heightScale) / viewDir.z;
+    return texCoords - p;
+}
+
+vec3 getNormalFromMap(vec2 texCoords)
+{
+    vec3 tangentNormal = texture(normalMap, texCoords).xyz * 2.0 - 1.0;
 
     vec3 Q1 = dFdx(WorldPos);
     vec3 Q2 = dFdy(WorldPos);
-    vec2 st1 = dFdx(TexCoords);
-    vec2 st2 = dFdy(TexCoords);
+    vec2 st1 = dFdx(texCoords);
+    vec2 st2 = dFdy(texCoords);
 
     vec3 N = normalize(Normal);
     vec3 T = normalize(Q1 * st2.t - Q2 * st1.t);
@@ -49,6 +59,7 @@ vec3 getNormalFromMap()
 
     return normalize(TBN * tangentNormal);
 }
+
 // ----------------------------------------------------------------------------
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
@@ -100,12 +111,15 @@ void main()
 
     if (useTextures > 0)
     {
-        albedo = pow(texture(albedoMap, TexCoords).rgb, vec3(2.2));
-        metallic = texture(metallicMap, TexCoords).r;
-        roughness = texture(roughnessMap, TexCoords).r;
-        ao = texture(aoMap, TexCoords).r;
+        vec2 texCoords = TexCoords;
+        texCoords = ParallaxMapping(texCoords, V);
 
-        N = getNormalFromMap();
+        albedo = pow(texture(albedoMap, texCoords).rgb, vec3(2.2));
+        metallic = texture(metallicMap, texCoords).r;
+        roughness = texture(roughnessMap, texCoords).r;
+        ao = texture(aoMap, texCoords).r;
+
+        N = getNormalFromMap(texCoords);
     }
 
 

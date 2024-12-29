@@ -397,7 +397,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </None>
     <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW4\light.vs.glsl">
     </None>
-    <ClCompile Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW4\pbr.cpp" />
+    <ClCompile Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW4\main.cpp" />
     <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW4\pbr.fs.glsl">
     </None>
     <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW4\pbr.vs.glsl">
