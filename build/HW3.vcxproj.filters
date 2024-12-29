@@ -18,6 +18,9 @@
     <ClInclude Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\blurEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\brightExtractEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\callbacks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -25,9 +28,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\effect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\fogEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW3\framebuffer.h">
