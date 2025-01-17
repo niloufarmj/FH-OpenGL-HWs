@@ -12,7 +12,9 @@ enum Camera_Movement {
     FORWARD,
     BACKWARD,
     LEFT,
-    RIGHT
+    RIGHT,
+    UP,
+    DOWN,
 };
 
 // Default camera values
@@ -72,12 +74,16 @@ public:
         float velocity = MovementSpeed * deltaTime;
         if (direction == FORWARD)
             Position += Front * velocity;
-        if (direction == BACKWARD)
+        else if (direction == BACKWARD)
             Position -= Front * velocity;
-        if (direction == LEFT)
+        else if (direction == LEFT)
             Position -= Right * velocity;
-        if (direction == RIGHT)
+        else if (direction == RIGHT)
             Position += Right * velocity;
+        else if (direction == UP)
+            Position += Up * velocity;
+        else if (direction == DOWN)
+            Position -= Up * velocity;
     }
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
