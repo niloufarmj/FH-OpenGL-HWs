@@ -190,6 +190,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Project>{628F841E-18B5-32CB-A722-642254EAB6CC}</Project>
       <Name>HW4</Name>
     </ProjectReference>
+    <ProjectReference Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\build\HW5.vcxproj">
+      <Project>{D580F876-7396-3F4A-B2DF-C1F88C455F04}</Project>
+      <Name>HW5</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW5\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW5\raytracing.fs.glsl" />
+    <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW5\raytracing.vs.glsl" />
+    <None Include="D:\FH Uni\rtg\Exercise1-Draw2DScene-VBOVAO\src\HW5\raytracing_multisample.fs.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{EB81D090-F53A-3337-A2D3-FDD5427D20AD}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
