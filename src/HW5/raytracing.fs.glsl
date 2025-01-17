@@ -1,6 +1,8 @@
 /**
  * a basic raytracer implementation
  */
+#version 330 core
+
 precision mediump float;
 
 
@@ -29,7 +31,14 @@ uniform int maxDepth;
 #define LIGHT_SIZE 0.1
 #define SHADOW_SAMPLES 3 // attention! squared!!
 
-
+// Function declarations
+float intersectCylinder(vec3 origin, vec3 ray, vec3 base, float radius, float height);
+vec3 normalForCylinder(vec3 hit, vec3 base, float radius);
+void addCylinder(vec3 ro, vec3 rd, vec3 base, float radius, float height, vec3 color,
+                 inout float hitDist, inout vec3 hitColor, inout vec3 hitNormal);
+float noise(vec3 p);
+vec3 applyNoiseTexture(vec3 position);
+vec3 random3(vec3 c);
 
 
 // SPHERE ----------------------------------------------------------------------
@@ -102,77 +111,29 @@ void addPlane(vec3 ro, vec3 rd, vec4 plane,
 
 
 
-// CUBE ------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-vec3 normalForCube(vec3 hit, vec3 cubeMin, vec3 cubeMax)
-{
-	if(hit.x < cubeMin.x + RAY_OFFSET) return vec3(-1.0, 0.0, 0.0);
-	else if(hit.x > cubeMax.x - RAY_OFFSET ) return vec3(1.0, 0.0, 0.0);
-	else if(hit.y < cubeMin.y + RAY_OFFSET ) return vec3(0.0, -1.0, 0.0);
-	else if(hit.y > cubeMax.y - RAY_OFFSET ) return vec3(0.0, 1.0, 0.0);
-	else if(hit.z < cubeMin.z + RAY_OFFSET ) return vec3(0.0, 0.0, -1.0);
-	else return vec3(0.0, 0.0, 1.0);
-}
-// ----------------------------------------------------------------------------
-vec2 intersectCube(vec3 origin, vec3 ray, vec3 cubeMin, vec3 cubeMax) {
-	vec3 tMin = (cubeMin - origin) / ray; // AA ray-plane intersection with x,y,z axis
-	vec3 tMax = (cubeMax - origin) / ray; // AA ray-plane intersection with x,y,z axis
-	vec3 t1 = min(tMin, tMax);
-	vec3 t2 = max(tMin, tMax);
-	float tNear = max(max(t1.x, t1.y), t1.z);
-	float tFar = min(min(t2.x, t2.y), t2.z);
-	return vec2(tNear, tFar);
-}
-// ----------------------------------------------------------------------------
-void addCube( vec3 ro, vec3 rd,
-		vec3 cubeMin, vec3 cubeMax,	vec3 color,
-		inout float hitDist, inout vec3 hitColor, inout vec3 hitNormal ){
-
-	vec2 tdist = intersectCube(ro, rd, cubeMax, cubeMin);
-	float dist = tdist.x <= tdist.y ? tdist.x : INFINITY;
-	dist = dist > 0.0 ? dist : INFINITY;
-	if (dist < hitDist) {
-		vec3 hit = ro + dist * rd;
-		hitNormal = normalForCube(hit, cubeMin, cubeMax);
-		hitColor = color;
-		hitDist = dist;
-	}
-}
 
 // SCENE ------------------------------------------------------------------------
 // scene descriptions
-float rayTraceScene(vec3 ro /*rayStart*/, vec3 rd /*rayDirection*/, out vec3 hitNormal, out vec3 hitColor)
-{
-	float hitDist = INFINITY;
-	hitNormal = vec3(0.0,0.0,0.0);
-
+float rayTraceScene(vec3 ro, vec3 rd, out vec3 hitNormal, out vec3 hitColor) {
+    float hitDist = INFINITY;
+    hitNormal = vec3(0.0, 0.0, 0.0);
 
     // ground plane
-	addPlane( ro, rd, vec4(0.0, 1.0, 0.0, 0.0), hitDist, hitColor, hitNormal );
-
+    addPlane(ro, rd, vec4(0.0, 1.0, 0.0, 0.0), hitDist, hitColor, hitNormal);
 
     // spheres
-	addSphere( ro, rd, vec3(1.0, 2.0, 5.0), 2.0, vec3(1.0, 0.0, 0.0), hitDist, hitColor, hitNormal  );
-	addSphere( ro, rd, vec3(5.0, 1.0, 2.0), 1.0, vec3(0.0, 1.0, 0.0), hitDist, hitColor, hitNormal  );
-	addSphere( ro, rd, vec3(5.0, 2.8, 1.0), 0.6, vec3(1.0, 0.0, 1.0), hitDist, hitColor, hitNormal );
+    addSphere(ro, rd, vec3(1.0, 2.0, 5.0), 2.0, vec3(1.0, 0.0, 0.0), hitDist, hitColor, hitNormal);
+    addSphere(ro, rd, vec3(5.0, 1.0, 2.0), 1.0, vec3(0.0, 1.0, 0.0), hitDist, hitColor, hitNormal);
 
-    // display light by white spheres
-	//addSphere( ro, rd, lightPosition, 0.1, vec3(1.0, 1.0, 1.0), hitDist, hitColor, hitNormal  );
+    // new cylinder
+    addCylinder(ro, rd, vec3(2.0, 0.0, 2.0), 1.0, 3.0, vec3(0.0, 1.0, 1.0), hitDist, hitColor, hitNormal);
 
-	
-    // add floating cube
-	addCube( ro, rd, vec3(0.0, 3.0, 0.0), vec3(1.0, 4.0, 1.0), vec3(1.0, 1.0, 0.0), hitDist, hitColor, hitNormal  );
+    // apply noise texture to the ground plane
+    if (hitDist < INFINITY && hitNormal.y == 1.0) {
+        hitColor = applyNoiseTexture(ro + rd * hitDist);
+    }
 
-	// table top
-	addCube(ro, rd, vec3(-2, 1.65, -2), vec3(2, 1.8, 2), vec3(0.0, 0.0, 1.0), hitDist, hitColor, hitNormal  );
-	// table legs
-	addCube(ro, rd, vec3(-1.9, 0, -1.9), vec3(-1.6, 1.65, -1.6), vec3(0.0, 0.0, 1.0), hitDist, hitColor, hitNormal  );
-	addCube(ro, rd, vec3(-1.9, 0, 1.6), vec3(-1.6, 1.65, 1.9), vec3(0.0, 0.0, 1.0), hitDist, hitColor, hitNormal  );
-	addCube(ro, rd, vec3(1.6, 0, 1.6), vec3(1.9, 1.65, 1.9), vec3(0.0, 0.0, 1.0), hitDist, hitColor, hitNormal  );
-	addCube(ro, rd, vec3(1.6, 0, -1.9), vec3(1.9, 1.65, -1.6), vec3(0.0, 0.0, 1.0), hitDist, hitColor, hitNormal  );
-	
-
-	return hitDist;
+    return hitDist;
 }
 
 // LIGHTING --------------------------------------------------------------------
@@ -267,4 +228,96 @@ void main() {
 	
 	if (hits > 0.0) color /= hits;
 	gl_FragColor.rgb = vec3(color);
+}
+
+// GLSL function to generate noise
+float noise(vec3 p) {
+    vec3 i = floor(p);
+    vec3 f = fract(p);
+    f = f*f*(3.0-2.0*f);
+    return mix(mix(mix(dot(random3(i), f - vec3(0,0,0)),
+                       dot(random3(i + vec3(1,0,0)), f - vec3(1,0,0)), f.x),
+                   mix(dot(random3(i + vec3(0,1,0)), f - vec3(0,1,0)),
+                       dot(random3(i + vec3(1,1,0)), f - vec3(1,1,0)), f.x), f.y),
+               mix(mix(dot(random3(i + vec3(0,0,1)), f - vec3(0,0,1)),
+                       dot(random3(i + vec3(1,0,1)), f - vec3(1,0,1)), f.x),
+                   mix(dot(random3(i + vec3(0,1,1)), f - vec3(0,1,1)),
+                       dot(random3(i + vec3(1,1,1)), f - vec3(1,1,1)), f.x), f.y), f.z);
+}
+
+// Apply noise texture to a surface
+vec3 applyNoiseTexture(vec3 position) {
+    float n = noise(position * 10.0);
+    return vec3(n, n, n);
+}
+
+// Intersection test for a cylinder
+float intersectCylinder(vec3 origin, vec3 ray, vec3 base, float radius, float height) {
+    vec3 d = ray;
+    vec3 o = origin - base;
+    float a = d.x * d.x + d.z * d.z;
+    float b = 2.0 * (o.x * d.x + o.z * d.z);
+    float c = o.x * o.x + o.z * o.z - radius * radius;
+    float discriminant = b * b - 4.0 * a * c;
+    if (discriminant < 0.0) return INFINITY;
+    float t0 = (-b - sqrt(discriminant)) / (2.0 * a);
+    float t1 = (-b + sqrt(discriminant)) / (2.0 * a);
+    float t = min(t0, t1);
+    float y = o.y + t * d.y;
+    if (y < 0.0 || y > height) return INFINITY;
+    return t;
+}
+
+// Intersection test for cylinder caps
+float intersectCylinderCap(vec3 origin, vec3 ray, vec3 base, float radius, float height, bool top) {
+    float t = (top ? (base.y + height - origin.y) : (base.y - origin.y)) / ray.y;
+    if (t < 0.0) return INFINITY;
+    vec3 hit = origin + t * ray;
+    if (length(hit.xz - base.xz) > radius) return INFINITY;
+    return t;
+}
+
+// Normal calculation for a cylinder
+vec3 normalForCylinder(vec3 hit, vec3 base, float radius) {
+    vec3 n = hit - base;
+    n.y = 0.0;
+    return normalize(n);
+}
+
+// Adding a cylinder to the scene
+void addCylinder(vec3 ro, vec3 rd, vec3 base, float radius, float height, vec3 color,
+                 inout float hitDist, inout vec3 hitColor, inout vec3 hitNormal) {
+    float dist = intersectCylinder(ro, rd, base, radius, height);
+    if (dist < hitDist) {
+        vec3 hit = ro + dist * rd;
+        hitNormal = normalForCylinder(hit, base, radius);
+        hitColor = color;
+        hitDist = dist;
+    }
+    float distBottom = intersectCylinderCap(ro, rd, base, radius, height, false);
+    if (distBottom < hitDist) {
+        vec3 hit = ro + distBottom * rd;
+        hitNormal = vec3(0.0, -1.0, 0.0);
+        hitColor = color;
+        hitDist = distBottom;
+    }
+    float distTop = intersectCylinderCap(ro, rd, base, radius, height, true);
+    if (distTop < hitDist) {
+        vec3 hit = ro + distTop * rd;
+        hitNormal = vec3(0.0, 1.0, 0.0);
+        hitColor = color;
+        hitDist = distTop;
+    }
+}
+
+// GLSL function to generate random values
+vec3 random3(vec3 c) {
+    float j = 4096.0 * sin(dot(c, vec3(17.0, 59.4, 15.0)));
+    vec3 r;
+    r.z = fract(512.0 * j);
+    j *= .125;
+    r.x = fract(512.0 * j);
+    j *= .125;
+    r.y = fract(512.0 * j);
+    return r - 0.5;
 }
