@@ -45,6 +45,7 @@ int main()
     // controllable settings
     bool animateLight = false;
     int maxDepth = 3;
+    int noiseAreaIndex = 0;
 
     // glfw: initialize and configure
     // ------------------------------
@@ -113,6 +114,11 @@ int main()
                 ImGui::SliderInt("ray depth", &maxDepth, 1, 10); // Edit 1 float using a slider from 0.0f to 1.0f
                 ImGui::Checkbox("animate light", &animateLight);
 
+                const char* noiseAreas[] = { "Plane", "Sphere", "Cylinder" };
+                
+
+                ImGui::Combo("Noise Area", &noiseAreaIndex, noiseAreas, IM_ARRAYSIZE(noiseAreas));
+
                 // a Button to reload the shader (so you don't need to recompile the cpp all the time)
                 if (ImGui::Button("reload shaders"))
                 {
@@ -149,6 +155,8 @@ int main()
         shader.setVec3("camPos", camera.Position);
         shader.setInt("maxDepth", maxDepth);
         shader.setVec2("viewportSize", glm::vec2(SCR_WIDTH, SCR_HEIGHT));
+        // Set the noiseArea uniform
+        shader.setInt("noiseArea", noiseAreaIndex);
 
         // update the light sources
         // for (unsigned int i = 0; i < sizeof(lightPositions) / sizeof(lightPositions[0]); ++i)

@@ -21,6 +21,8 @@ uniform vec3 lightPosition;
 // maximum ray depth
 uniform int maxDepth;
 
+uniform int noiseArea;
+
 
 // CONSTANTS/DEFINE
 #define INFINITY 100000.0
@@ -128,9 +130,13 @@ float rayTraceScene(vec3 ro, vec3 rd, out vec3 hitNormal, out vec3 hitColor) {
     // new cylinder
     addCylinder(ro, rd, vec3(2.0, 0.0, 2.0), 1.0, 3.0, vec3(0.0, 1.0, 1.0), hitDist, hitColor, hitNormal);
 
-    // apply noise texture to the ground plane
-    if (hitDist < INFINITY && hitNormal.y == 1.0) {
-        hitColor = applyNoiseTexture(ro + rd * hitDist);
+    // apply noise texture based on the selected area
+    if (hitDist < INFINITY) {
+        if ((noiseArea == 0 && hitNormal.y == 1.0) ||  // Plane
+            (noiseArea == 1 && length(hitNormal - normalForSphere(ro + rd * hitDist, vec3(1.0, 2.0, 5.0), 2.0)) < EPSILON) ||  // Sphere
+            (noiseArea == 2 && length(hitNormal - normalForCylinder(ro + rd * hitDist, vec3(2.0, 0.0, 2.0), 1.0)) < EPSILON)) {  // Cylinder
+            hitColor = applyNoiseTexture(ro + rd * hitDist);
+        }
     }
 
     return hitDist;
