@@ -31,8 +31,9 @@ const float STEP_EPSILON = 0.002;
 
 
 vec3 displacement(in vec3 pos) {
-    float wave = sin(pos.x * 2.0 + time) * 0.1;
-    return vec3(pos.x, pos.y + wave, pos.z);
+    float waveX = sin(pos.y * 2.0 + time) * 0.1;
+    float waveZ = cos(pos.x * 2.0 + time) * 0.1;
+    return vec3(waveX, 0.0, waveZ);
 }
 
 // returns the distance-color vector that has the smaller distance value
@@ -264,14 +265,14 @@ vec4 raymarch(inout vec3 pos, in vec3 raydir) {
     float totalDist = 0.0;
     vec4 curDC = map(pos);
     float curDist = curDC.a;
-    while (curDist > STEP_EPSILON && totalDist < MAX_DIST && step < STEP_LIMIT) {  
-        pos = pos + raydir * curDist;  // take a step; march by the current distance
-        totalDist += curDist; // update the total march distance
-        curDC = map(pos);  // evaluate the length of the next step
+    while (curDist > STEP_EPSILON && totalDist < MAX_DIST && step < STEP_LIMIT) {
+        pos = pos + raydir * curDist;
+        pos += displacement(pos);  // Apply displacement
+        totalDist += curDist;
+        curDC = map(pos);
         curDist = curDC.a;
         ++step;
     }
-
     return (step < STEP_LIMIT) ? vec4(curDC.rgb, totalDist) : MAX_DIST_DC;
 }
 
