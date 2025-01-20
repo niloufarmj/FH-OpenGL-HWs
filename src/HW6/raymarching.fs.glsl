@@ -29,6 +29,12 @@ const float SHADOW_HARDNESS = 16.0;
 const int STEP_LIMIT = 256;
 const float STEP_EPSILON = 0.002;
 
+
+vec3 displacement(in vec3 pos) {
+    float wave = sin(pos.x * 2.0 + time) * 0.1;
+    return vec3(pos.x, pos.y + wave, pos.z);
+}
+
 // returns the distance-color vector that has the smaller distance value
 vec4 minDCVec(vec4 a, vec4 b) {
     return vec4(mix(a.rgb, b.rgb, step(b.a, a.a)), min(a.a, b.a));
@@ -160,43 +166,80 @@ float sdAAMengerCube(in vec3 pos, in float scale, in int iterations) {
     return dist;
 }
 
+// CONE ------------------------------------------------------------------------
+float sdCone(in vec3 pos, in float height, in float radius) {
+    vec2 q = vec2(length(pos.xz), pos.y);
+    vec2 tip = q - vec2(radius, height);
+    vec2 mantleDir = normalize(vec2(radius, height));
+    float mantle = dot(tip, mantleDir);
+    float d = max(mantle, -q.y);
+    return d;
+}
+
+// HOUSE -----------------------------------------------------------------------
+float sdHouse(in vec3 pos, float progress) {
+    // Adjust position to place the house on the plane
+    pos.y += 0.5;
+    
+    // Apply a twist effect based on progress
+    pos = twistPosition(pos, progress * 3.14);
+    
+    // Base of the house
+    float baseHeight = 0.5 + 0.5 * progress; // Vary height with progress
+    float base = sdAACube(pos, vec3(1.0, baseHeight, 1.0));
+    
+    // Roof of the house (pyramid)
+    float roofHeight = 1.0 + progress; // Vary roof height with progress
+    float roof = sdCone(pos - vec3(0.0, baseHeight, 0.0), roofHeight, 1.0);
+    
+    // Combine base and roof
+    return sdUnion(base, roof);
+}
+
+// TREE ------------------------------------------------------------------------
+float sdTree(in vec3 pos, float progress) {
+    // Adjust position to place the tree on the plane
+    pos.y += 0.5;
+    
+    // Apply a bending effect based on progress
+    float bend = sin(progress * 3.14) * 0.5;
+    pos.x += pos.y * bend;
+    
+    // Trunk of the tree
+    float trunkHeight = 1.0 + progress; // Vary trunk height with progress
+    float trunk = sdCylinder(pos, vec3(0.0, trunkHeight, 0.0), 0.2);
+    
+    // Foliage of the tree
+    float foliageSize = 0.75 + 0.5 * progress; // Vary foliage size with progress
+    float foliage = sdSphere(pos - vec3(0.0, trunkHeight + 0.5, 0.0), foliageSize);
+    
+    // Combine trunk and foliage
+    return sdUnion(trunk, foliage);
+}
+
+
 // evaluate the distance field at the given position; maps a coordinate to a distance
 // returns a vector containg RGB values and the distance
 vec4 map(in vec3 pos) {
     vec4 result = MAX_DIST_DC;
 
-    //// compute the distances to each object in the scene
+    // Existing objects
     float distPlane = sdAAPlane(pos, -2.0);
 
-    float distSphereA = sdSphere(pos, 1.0);
-    float distSphereB = sdSphere(pos - vec3(1.25 + 5 * progress, 1.0, 0.0), 1.5);
-    float distSphereC = sdSphere(pos - vec3(-0.65, 1.5, 0.0), 0.75);
-    
-    vec3 curPosition = twistPosition(pos - vec3(-4.0, 1.0, 0.0), 0.5 * progress);
-    float distCube = sdAACube(curPosition, vec3(1.0, 1.0, 2.0));
-    
-    const mat3 mugTransform = mat3(
-        vec3(0.0000000, 0.0000000, 1.0000000),
-        vec3(-0.4226183, 0.9063078, 0.0000000),
-        vec3(-0.9063078, -0.4226183, 0.0000000)
-    );
-    float distMug = sdMug(mugTransform * (pos - vec3(5.0, 2.0, 5.0)));
-    
+    // New objects
+    float distHouse = sdHouse(pos - vec3(2.0, 0.0, 0.0), progress/5);
+    float distTree = sdTree(pos - vec3(-2.0, 0.0, 0.0), progress/5);
+    vec4 dcHouse = vec4(vec3(0.6, 0.3, 0.2), distHouse);
+    vec4 dcTree = vec4(vec3(0.0, 0.8, 0.0), distTree);
 
-    //// assign colors to the distances
+    // Assign colors to the distances
     vec3 planeColor = vec3(mod(floor(pos.z) + floor(pos.x), 2.0) * 0.7);
     vec4 dcPlane = vec4(planeColor.xyz, distPlane);
-    vec4 dcSphere = vec4(1.0, 0.0, 0.4, sdSmoothUnion(sdSmoothUnion(distSphereA, distSphereB, 0.5), distSphereC, 0.5));
-    vec4 dcCube = vec4(0.0, 1.0, 0.6, distCube);
-    vec4 dcMug = vec4(0.4, 1.0, 0.0, distMug);
 
-
-    //// combine the objects of the scene to form one distance 
+    // Combine all objects
     result = minDCVec(result, dcPlane);
-    result = minDCVec(result, dcSphere);
-    result = minDCVec(result, dcCube);
-    result = minDCVec(result, dcMug);
-
+    result = minDCVec(result, dcHouse);
+    result = minDCVec(result, dcTree);
 
     return result;
 }
