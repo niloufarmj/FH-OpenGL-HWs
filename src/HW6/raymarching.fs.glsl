@@ -192,8 +192,14 @@ float sdHouse(in vec3 pos, float progress) {
     float roofHeight = 1.0 + progress; // Vary roof height with progress
     float roof = sdCone(pos - vec3(0.0, baseHeight, 0.0), roofHeight, 1.0);
     
-    // Combine base and roof
-    return sdUnion(base, roof);
+    // Door of the house
+    float door = sdAACube(pos - vec3(0.0, -0.25, 1.0), vec3(0.3, 0.5, 0.1));
+    
+    // Combine base and roof, and subtract the door
+    float house = sdUnion(base, roof);
+    house = sdDifference(house, door);
+    
+    return house;
 }
 
 // TREE ------------------------------------------------------------------------
@@ -213,8 +219,16 @@ float sdTree(in vec3 pos, float progress) {
     float foliageSize = 0.75 + 0.5 * progress; // Vary foliage size with progress
     float foliage = sdSphere(pos - vec3(0.0, trunkHeight + 0.5, 0.0), foliageSize);
     
-    // Combine trunk and foliage
-    return sdUnion(trunk, foliage);
+    // Branches of the tree
+    float branch1 = sdCylinder(pos - vec3(0.0, trunkHeight * 0.5, 0.0), vec3(1.0, 0.0, 0.0), 0.1);
+    float branch2 = sdCylinder(pos - vec3(0.0, trunkHeight * 0.75, 0.0), vec3(-1.0, 0.0, 0.0), 0.1);
+    
+    // Combine trunk, foliage, and branches
+    float tree = sdUnion(trunk, foliage);
+    tree = sdUnion(tree, branch1);
+    tree = sdUnion(tree, branch2);
+    
+    return tree;
 }
 
 
